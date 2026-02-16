@@ -41,7 +41,7 @@ jobs:
 
           FOUND=0
           for PATTERN in "${PATTERNS[@]}"; do
-            if grep -rn "$PATTERN" --include="*.md" --include="*.ts" --include="*.sql" --include="*.json" --include="*.yml" --include="*.yaml" . 2>/dev/null; then
+            if grep -rn "$PATTERN" --include="*.md" --include="*.ts" --include="*.sql" --include="*.json" --include="*.yml" --include="*.yaml" --exclude-dir=".github/workflows" . 2>/dev/null; then
               echo "FOUND: $PATTERN"
               FOUND=1
             fi
