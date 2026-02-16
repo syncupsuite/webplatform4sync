@@ -1,0 +1,74 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "{{PROJECT_NAME}}",
+  "main": "src/server/index.ts",
+  "compatibility_date": "2025-12-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // ---------- Bindings ----------
+
+  "kv_namespaces": [
+    {
+      "binding": "CACHE",
+      "id": "{{KV_NAMESPACE_ID}}",
+      "preview_id": "{{KV_NAMESPACE_PREVIEW_ID}}"
+    }
+  ],
+
+  "r2_buckets": [
+    {
+      "binding": "ASSETS",
+      "bucket_name": "{{PROJECT_NAME}}-assets"
+      // Remove this block if R2 is not needed
+    }
+  ],
+
+  "hyperdrive": [
+    {
+      "binding": "DB",
+      "id": "{{HYPERDRIVE_ID}}"
+    }
+  ],
+
+  // ---------- Variables ----------
+
+  "vars": {
+    "ENVIRONMENT": "development",
+    "APP_URL": "http://localhost:8080"
+  },
+
+  // ---------- Environments ----------
+
+  "env": {
+    "staging": {
+      "name": "{{PROJECT_NAME}}-staging",
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "APP_URL": "https://staging.{{DOMAIN}}"
+      },
+      "routes": [
+        {
+          "pattern": "staging.{{DOMAIN}}",
+          "zone_name": "{{DOMAIN}}"
+        }
+      ]
+    },
+    "production": {
+      "name": "{{PROJECT_NAME}}-production",
+      "vars": {
+        "ENVIRONMENT": "production",
+        "APP_URL": "https://{{DOMAIN}}"
+      },
+      "routes": [
+        {
+          "pattern": "{{DOMAIN}}",
+          "zone_name": "{{DOMAIN}}"
+        },
+        {
+          "pattern": "www.{{DOMAIN}}",
+          "zone_name": "{{DOMAIN}}"
+        }
+      ]
+    }
+  }
+}
