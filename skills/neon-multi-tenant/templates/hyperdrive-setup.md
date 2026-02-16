@@ -37,7 +37,7 @@ wrangler hyperdrive create brandsyncup-prod \
   --connection-string="postgres://neondb_owner:PASSWORD@ep-XXXXX.us-east-2.aws.neon.tech/neondb?sslmode=require"
 ```
 
-This outputs a Hyperdrive config ID (e.g., `d98679b9c4084f11bca2b9679f3d1e5e`). Store this ID -- you will reference it in your Worker configuration.
+This outputs a Hyperdrive config ID (e.g., `your-hyperdrive-config-id`). Store this ID -- you will reference it in your Worker configuration.
 
 ### Step 2: Configure Caching (Optional)
 
@@ -76,7 +76,7 @@ Caching options:
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
-      "id": "d98679b9c4084f11bca2b9679f3d1e5e"
+      "id": "your-hyperdrive-config-id"
     }
   ],
 

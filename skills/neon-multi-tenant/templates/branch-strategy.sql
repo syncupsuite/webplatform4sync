@@ -277,7 +277,7 @@ SELECT current_setting('app.user_id');
 -- import { createApiClient } from '@neondatabase/api';
 --
 -- const neon = createApiClient({ apiKey: process.env.NEON_API_KEY });
--- const projectId = 'polished-truth-90679079';
+-- const projectId = 'your-neon-project-id';
 --
 -- // --- List all branches ---
 -- const { data: branches } = await neon.listProjectBranches(projectId);

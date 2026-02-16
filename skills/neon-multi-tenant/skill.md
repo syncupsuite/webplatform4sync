@@ -49,19 +49,19 @@ Key properties:
 
 ## SyncUpSuite Branch Layout
 
-The SyncUp monorepo uses a single Neon project (`syncup-brand-legal`, ID: `polished-truth-90679079`) with the following branch hierarchy:
+The SyncUp monorepo uses a single Neon project (`your-neon-project`, ID: `your-neon-project-id`) with the following branch hierarchy:
 
 ```
 production (default)
  |-- neon_auth schema (Better Auth: users, sessions, accounts, verifications)
  |
- +-- brandsyncup-prod (br-damp-dust-agvnfraf)
+ +-- brandsyncup-prod (br-xxx-xxx-xxxxxxxx)
  |    |-- brandsyncup schema (brand collaboration data)
- |    +-- brandsyncup-dev (br-broad-heart-aglkic7z)
+ |    +-- brandsyncup-dev (br-xxx-xxx-xxxxxxxx)
  |
- +-- legalsyncup-production (br-cool-bird-agmnaox6)
+ +-- legalsyncup-production (br-xxx-xxx-xxxxxxxx)
       |-- legalsyncup schema (legal compliance data)
-      +-- legalsyncup-development (br-polished-sun-ag8a15yi)
+      +-- legalsyncup-development (br-xxx-xxx-xxxxxxxx)
 ```
 
 - **Shared auth**: All apps authenticate against `neon_auth` on the production branch. Session tokens are portable across apps.

@@ -238,8 +238,8 @@ Changes to `neon_auth` affect all applications. A migration that adds a column t
 7. **Propagate**: Reset or migrate child branches as needed.
    ```bash
    # Reset dev branches to inherit the new schema
-   neon branches reset br-broad-heart-aglkic7z --parent
-   neon branches reset br-polished-sun-ag8a15yi --parent
+   neon branches reset br-xxx-xxx-xxxxxxxx --parent
+   neon branches reset br-xxx-xxx-xxxxxxxx --parent
    ```
 
 ### Safe Migration Patterns

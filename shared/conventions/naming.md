@@ -24,9 +24,7 @@ repo name = domain name = Google project ID
 
 | Prefix | Meaning | Visibility |
 |--------|---------|------------|
-| `hn-` | Internal (syncupsuite) | Private |
 | `p--` | Public release | Public |
-| `su-` | SyncUp product repos | Private (existing convention) |
 
 ## Firebase Project Naming
 
@@ -54,7 +52,7 @@ Hyperdrive: brandsyncup-com-db
 Neon project per logical group. Branches per environment:
 
 ```
-Neon project: syncup-brand-legal
+Neon project: your-neon-project
 ├── production (default branch)
 ├── brandsyncup-prod
 │   └── brandsyncup-dev

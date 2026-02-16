@@ -1,12 +1,11 @@
-# CLAUDE.md — hn-platform4sync
+# CLAUDE.md — webplatform4sync
 
 ## Repository Purpose
 
 Internal platform standards, skills, and scaffold templates for all SyncUpSuite projects. This repo defines **the standard** that every project — greenfield or brownfield — aligns to.
 
 **Org**: `syncupsuite`
-**Prefix**: `hn-` = internal
-**Public counterpart**: [`syncupsuite/webplatform4sync`](https://github.com/syncupsuite/webplatform4sync)
+****Repo**: `syncupsuite/webplatform4sync`
 
 ---
 

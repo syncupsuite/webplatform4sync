@@ -126,8 +126,8 @@ The following placeholders are replaced during scaffolding:
 | `{{REPO_NAME}}` | Question 1 | `su-brandsyncup-com` |
 | `{{SCHEMA_NAME}}` | Question 1 | `brandsyncup` |
 | `{{NEON_REGION}}` | Question 3 | `europe-west6` or `us-east-2` |
-| `{{CF_ACCOUNT_ID}}` | Cloudflare auth | `6b078bcaa9984a2d1dbe483e65c741b0` |
-| `{{NEON_PROJECT_ID}}` | Neon project | `polished-truth-90679079` |
+| `{{CF_ACCOUNT_ID}}` | Cloudflare auth | `your-cloudflare-account-id` |
+| `{{NEON_PROJECT_ID}}` | Neon project | `your-neon-project-id` |
 
 ---
 
