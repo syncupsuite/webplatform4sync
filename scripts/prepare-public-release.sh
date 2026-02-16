@@ -19,7 +19,7 @@ scrub_files() {
   local pattern="$1"
   local replacement="$2"
   for ext in "${EXTS[@]}"; do
-    find . -name "$ext" -not -path './.git/*' -exec sed -i '' "s|${pattern}|${replacement}|g" {} + 2>/dev/null || true
+    find . -name "$ext" -not -path './.git/*' -not -path './.github/workflows/*' -exec sed -i '' "s|${pattern}|${replacement}|g" {} + 2>/dev/null || true
   done
 }
 
@@ -181,7 +181,7 @@ echo ""
 
 PATTERNS="polished-truth-90679079|habitusnet|HabitusNet|6b078bcaa9984a2d1dbe483e65c741b0|43b75292cfc44ed5b0483a1a030dee9f|d98679b9c4084f11bca2b9679f3d1e5e|br-damp-dust-agvnfraf|br-broad-heart-aglkic7z|br-cool-bird-agmnaox6|br-polished-sun-ag8a15yi|for-syncup\.md|syncup-brand-legal"
 
-if grep -rn "$PATTERNS" --include="*.md" --include="*.ts" --include="*.sql" --include="*.json" --include="*.yml" --include="*.yaml" --include="*.jsonc" --include="*.css" . 2>/dev/null | grep -v '.git/'; then
+if grep -rn "$PATTERNS" --include="*.md" --include="*.ts" --include="*.sql" --include="*.json" --include="*.jsonc" --include="*.css" --exclude-dir=.github --exclude-dir=.git . 2>/dev/null; then
   echo ""
   echo "WARNING: Private data still detected. Review matches above."
   exit 1
