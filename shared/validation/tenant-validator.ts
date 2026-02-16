@@ -5,18 +5,18 @@
  * Used during scaffold generation and CI/CD checks.
  */
 
-// Canonical types: see shared/contracts/tenant.ts
+import type { TenantTier, TenantStatus, IsolationMode } from '../contracts/tenant';
 
 // --- Types ---
 
 interface Tenant {
   id: string;
-  tier: 0 | 1 | 2;
+  tier: TenantTier;
   parentId: string | null;
   name: string;
   slug: string;
-  status: 'active' | 'suspended' | 'provisioning' | 'decommissioned';
-  isolationMode: 'rls' | 'schema' | 'database';
+  status: TenantStatus;
+  isolationMode: IsolationMode;
 }
 
 interface TenantValidationResult {

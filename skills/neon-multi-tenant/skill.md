@@ -140,13 +140,12 @@ See `templates/drizzle-tenant.ts` for the full implementation.
 ### Key Patterns
 
 ```typescript
-// Creating a tenant-scoped client
-const db = createTenantClient(connectionString, tenantId);
+// Executing a tenant-scoped query (context + query in one transaction)
+const docs = await tenantQuery(connectionString, { tenantId, userId }, async (db) => {
+  return db.select().from(documents); // RLS enforces tenant_id filter
+});
 
-// All queries automatically filter by tenant_id
-const docs = await db.select().from(documents); // WHERE tenant_id = ?
-
-// Inserts automatically include tenant_id
+// Inserts with automatic tenant_id injection
 await db.insert(documents).values({ title: 'New Doc' }); // tenant_id injected
 ```
 

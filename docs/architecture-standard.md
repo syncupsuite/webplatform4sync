@@ -143,13 +143,13 @@ Platform Core Tokens (T0)
 
 ### Protected Tokens (Cannot Be Overridden)
 
-- `color.semantic.success`
-- `color.semantic.warning`
-- `color.semantic.error`
-- `color.semantic.focus`
-- `spacing.scale`
-- `motion.duration`
-- `accessibility.focusRing`
+- `semantic.light.status.success` / `semantic.dark.status.success`
+- `semantic.light.status.warning` / `semantic.dark.status.warning`
+- `semantic.light.status.error` / `semantic.dark.status.error`
+- `semantic.light.focus.ring` / `semantic.dark.focus.ring`
+- `semantic.light.accessibility.*` / `semantic.dark.accessibility.*`
+
+See `shared/contracts/tokens.ts` for the canonical `PROTECTED_TOKEN_PATHS` list.
 
 ### Tailwind 4 Integration
 

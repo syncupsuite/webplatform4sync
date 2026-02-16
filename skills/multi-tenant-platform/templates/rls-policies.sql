@@ -251,6 +251,7 @@ CREATE POLICY t2_insert_access ON platform.tenant_settings
     WITH CHECK (
         platform.current_tenant_tier() = 2
         AND tenant_id = platform.current_tenant_id()
+        AND inherited = false
     );
 
 

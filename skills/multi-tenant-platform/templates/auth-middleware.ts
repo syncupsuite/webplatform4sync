@@ -161,9 +161,10 @@ async function setDatabaseTenantContext(
   tenant: TenantContext,
 ): Promise<void> {
   await db.query('BEGIN');
-  await db.query(`SELECT platform.set_tenant_context($1, $2)`, [
+  // Tier is looked up from the database inside set_tenant_context()
+  // to prevent callers from lying about their tier level.
+  await db.query(`SELECT platform.set_tenant_context($1)`, [
     tenant.tenantId,
-    tenant.tier,
   ]);
 }
 

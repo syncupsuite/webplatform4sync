@@ -524,8 +524,8 @@ export async function handleOAuthCallback(
   provider: OAuthProvider,
   code: string,
   config: OAuthGraduationConfig,
-  state?: string,
-  expectedState?: string
+  state: string,
+  expectedState: string
 ): Promise<{
   authState: OAuthAuth | FullAuth;
   cookie: {

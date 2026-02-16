@@ -10,7 +10,7 @@ This schema lives on the production branch and is inherited by all child branche
 
 ## Table Structure
 
-### neon_auth.users
+### neon_auth.user
 
 The core identity table. One row per human across all applications.
 
@@ -30,7 +30,7 @@ The core identity table. One row per human across all applications.
 - Better Auth uses TEXT for IDs (not UUID type) for cross-database compatibility.
 - The `email` uniqueness constraint means a user with the same email across BrandSyncUp and LegalSyncUp is the **same user** with the **same ID**. This is by design for cross-app SSO.
 
-### neon_auth.sessions
+### neon_auth.session
 
 Active user sessions. JWT-based with 7-day default expiry.
 
@@ -54,7 +54,7 @@ Active user sessions. JWT-based with 7-day default expiry.
 - Session expiry is 7 days by default, configurable in Better Auth config.
 - The `token` is what gets stored in the `httpOnly` cookie (`better-auth.session_token`).
 
-### neon_auth.accounts
+### neon_auth.account
 
 OAuth providers and credential accounts linked to users.
 
@@ -83,7 +83,7 @@ OAuth providers and credential accounts linked to users.
 - The `password` field is only populated for `credential` provider accounts and contains a bcrypt hash.
 - OAuth tokens are stored for providers that need them for API access (e.g., GitHub API).
 
-### neon_auth.verifications
+### neon_auth.verification
 
 Email and phone verification tokens.
 
@@ -104,7 +104,7 @@ Email and phone verification tokens.
 - Tokens are short-lived (typically 10 minutes).
 - Better Auth cleans up expired tokens automatically.
 
-### neon_auth.organizations
+### neon_auth.organization
 
 Organization/team support via Better Auth's organization plugin.
 
@@ -120,7 +120,7 @@ Organization/team support via Better Auth's organization plugin.
 
 **Constraints**: `PRIMARY KEY (id)`, `UNIQUE (slug)`
 
-### neon_auth.members
+### neon_auth.member
 
 Organization membership with role assignments.
 
@@ -151,10 +151,10 @@ Organization membership with role assignments.
 ```
 User logs into BrandSyncUp
   |
-  +-> Better Auth validates credentials against neon_auth.accounts
+  +-> Better Auth validates credentials against neon_auth.account
   |     (production branch connection)
   |
-  +-> Session created in neon_auth.sessions
+  +-> Session created in neon_auth.session
   |     (production branch connection)
   |
   +-> Session token set in httpOnly cookie
@@ -162,7 +162,7 @@ User logs into BrandSyncUp
   |
   +-> User navigates to LegalSyncUp
   |
-  +-> LegalSyncUp validates session token against neon_auth.sessions
+  +-> LegalSyncUp validates session token against neon_auth.session
   |     (same production branch connection)
   |
   +-> Session is valid -> user is authenticated in LegalSyncUp
@@ -272,17 +272,17 @@ This ensures zero-downtime migrations across multiple applications.
 
 ```sql
 -- Users can read their own profile
-CREATE POLICY users_self_read ON neon_auth.users
+CREATE POLICY users_self_read ON neon_auth.user
     FOR SELECT
     USING (id = current_setting('app.user_id', true));
 
 -- Sessions visible only to owning user
-CREATE POLICY sessions_self_read ON neon_auth.sessions
+CREATE POLICY sessions_self_read ON neon_auth.session
     FOR SELECT
     USING (user_id = current_setting('app.user_id', true));
 
 -- Accounts visible only to owning user
-CREATE POLICY accounts_self_read ON neon_auth.accounts
+CREATE POLICY accounts_self_read ON neon_auth.account
     FOR SELECT
     USING (user_id = current_setting('app.user_id', true));
 ```
@@ -304,17 +304,17 @@ For the `organizations` and `members` tables, policies allow users to see organi
 
 ```sql
 -- Users can see organizations they are members of
-CREATE POLICY members_org_read ON neon_auth.organizations
+CREATE POLICY members_org_read ON neon_auth.organization
     FOR SELECT
     USING (
       id IN (
-        SELECT organization_id FROM neon_auth.members
+        SELECT organization_id FROM neon_auth.member
         WHERE user_id = current_setting('app.user_id', true)
       )
     );
 
 -- Users can see their own memberships
-CREATE POLICY members_self_read ON neon_auth.members
+CREATE POLICY members_self_read ON neon_auth.member
     FOR SELECT
     USING (user_id = current_setting('app.user_id', true));
 ```
@@ -330,7 +330,7 @@ import { pgSchema, text, boolean, timestamp, jsonb } from 'drizzle-orm/pg-core';
 
 export const neonAuth = pgSchema('neon_auth');
 
-export const users = neonAuth.table('users', {
+export const authUser = neonAuth.table('user', {
   id: text('id').primaryKey(),
   name: text('name'),
   email: text('email').notNull().unique(),
@@ -340,9 +340,9 @@ export const users = neonAuth.table('users', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-export const sessions = neonAuth.table('sessions', {
+export const authSession = neonAuth.table('session', {
   id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id),
+  userId: text('user_id').notNull().references(() => authUser.id),
   token: text('token').notNull().unique(),
   expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
   ipAddress: text('ip_address'),
@@ -351,9 +351,9 @@ export const sessions = neonAuth.table('sessions', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-export const accounts = neonAuth.table('accounts', {
+export const authAccount = neonAuth.table('account', {
   id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id),
+  userId: text('user_id').notNull().references(() => authUser.id),
   accountId: text('account_id').notNull(),
   providerId: text('provider_id').notNull(),
   accessToken: text('access_token'),

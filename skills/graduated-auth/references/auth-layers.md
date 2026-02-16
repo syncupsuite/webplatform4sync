@@ -313,7 +313,7 @@ const projects = await db.query.projects.findMany();
 ```
 
 The `tenantId` comes from:
-1. The `x-tenant-id` request header (set by client based on URL or selection)
+1. The authenticated session's tenant membership (server-side only — never from client headers)
 2. The user's default organization in Better Auth
 3. A single hardcoded value (for single-tenant deployments)
 
