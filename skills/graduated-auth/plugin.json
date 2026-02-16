@@ -1,0 +1,6 @@
+{
+  "name": "graduated-auth",
+  "version": "0.1.0",
+  "description": "Graduated authentication from anonymous to full account without friction walls",
+  "commands": ["./skill.md"]
+}

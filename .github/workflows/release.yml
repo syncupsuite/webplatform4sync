@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate semver tag
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          if ! echo "$TAG" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$'; then
+            echo "ERROR: Tag '$TAG' is not valid semver (expected vX.Y.Z or vX.Y.Z-prerelease)"
+            exit 1
+          fi
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+          echo "VERSION=${TAG#v}" >> "$GITHUB_ENV"
+
+      - name: Check for private data
+        run: |
+          PATTERNS=(
+            "polished-truth-90679079"
+            "br-damp-dust-agvnfraf"
+            "br-broad-heart-aglkic7z"
+            "br-cool-bird-agmnaox6"
+            "br-polished-sun-ag8a15yi"
+            "6b078bcaa9984a2d1dbe483e65c741b0"
+            "43b75292cfc44ed5b0483a1a030dee9f"
+            "d98679b9c4084f11bca2b9679f3d1e5e"
+            "habitusnet"
+            "HabitusNet"
+          )
+
+          FOUND=0
+          for PATTERN in "${PATTERNS[@]}"; do
+            if grep -rn "$PATTERN" --include="*.md" --include="*.ts" --include="*.sql" --include="*.json" --include="*.yml" --include="*.yaml" . 2>/dev/null; then
+              echo "FOUND: $PATTERN"
+              FOUND=1
+            fi
+          done
+
+          if [ "$FOUND" -eq 1 ]; then
+            echo "ERROR: Private data detected. Cannot release."
+            exit 1
+          fi
+
+      - name: Extract changelog for version
+        id: changelog
+        run: |
+          VERSION="${VERSION}"
+          # Extract section for this version from CHANGELOG.md
+          if [ -f CHANGELOG.md ]; then
+            NOTES=$(awk "/^## \\[${VERSION}\\]/{found=1; next} /^## \\[/{if(found) exit} found{print}" CHANGELOG.md)
+          fi
+          if [ -z "$NOTES" ]; then
+            NOTES="Release ${TAG}"
+          fi
+          # Write to file for gh release
+          echo "$NOTES" > /tmp/release-notes.md
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --notes-file /tmp/release-notes.md

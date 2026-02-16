@@ -1,0 +1,6 @@
+{
+  "name": "theme-inspired-tokens",
+  "version": "0.1.0",
+  "description": "Culturally-grounded design token systems with W3C DTCG alignment and Style Dictionary",
+  "commands": ["./skill.md"]
+}

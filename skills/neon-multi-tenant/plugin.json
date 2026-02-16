@@ -1,0 +1,6 @@
+{
+  "name": "neon-multi-tenant",
+  "version": "0.1.0",
+  "description": "Neon PostgreSQL multi-tenant patterns with branch isolation, Hyperdrive, and Drizzle ORM",
+  "commands": ["./skill.md"]
+}
