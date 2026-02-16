@@ -13,6 +13,8 @@
  * Usage with raw Workers:
  *   export default { fetch: withTenantContext(handler, env) };
  */
+// Canonical types: see shared/contracts/tenant.ts, shared/contracts/auth.ts
+// Canonical Env: see shared/contracts/env.ts
 
 import { Pool, type PoolClient } from '@neondatabase/serverless';
 
@@ -345,6 +347,7 @@ export function tenantMiddleware(options?: { publicPaths?: string[] }) {
       throw error;
     } finally {
       db.release();
+      await pool.end();
     }
   };
 }
@@ -415,6 +418,7 @@ export function withTenantContext(
       throw error;
     } finally {
       db.release();
+      await pool.end();
     }
   };
 }

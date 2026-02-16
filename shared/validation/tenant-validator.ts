@@ -5,6 +5,8 @@
  * Used during scaffold generation and CI/CD checks.
  */
 
+// Canonical types: see shared/contracts/tenant.ts
+
 // --- Types ---
 
 interface Tenant {
@@ -13,8 +15,8 @@ interface Tenant {
   parentId: string | null;
   name: string;
   slug: string;
-  status: 'active' | 'suspended' | 'deleted';
-  isolationMode: 'db' | 'schema' | 'rls';
+  status: 'active' | 'suspended' | 'provisioning' | 'decommissioned';
+  isolationMode: 'rls' | 'schema' | 'database';
 }
 
 interface TenantValidationResult {
@@ -78,7 +80,7 @@ export function validateHierarchy(tenants: Tenant[]): TenantValidationResult {
     }
 
     // Slug must be valid
-    if (!/^[a-z0-9][a-z0-9-]*[a-z0-9]$/.test(tenant.slug) && tenant.slug.length > 1) {
+    if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/.test(tenant.slug)) {
       errors.push({
         tenantId: tenant.id,
         message: `Invalid slug: ${tenant.slug} (must be lowercase, hyphens, no leading/trailing hyphen)`,
@@ -114,7 +116,15 @@ export function validateHierarchy(tenants: Tenant[]): TenantValidationResult {
  * SQL queries to verify RLS is properly configured on a table.
  * Returns SQL strings to execute against the database.
  */
-export function generateRLSCheckQueries(tableName: string, schemaName: string): string[] {
+export function generateRLSCheckQueries(schemaName: string, tableName: string): string[] {
+  // Validate inputs to prevent SQL injection
+  if (!/^[a-z_][a-z0-9_]*$/.test(schemaName)) {
+    throw new Error(`Invalid schema name: ${schemaName}`);
+  }
+  if (!/^[a-z_][a-z0-9_]*$/.test(tableName)) {
+    throw new Error(`Invalid table name: ${tableName}`);
+  }
+
   return [
     // Check RLS is enabled
     `SELECT relrowsecurity, relforcerowsecurity

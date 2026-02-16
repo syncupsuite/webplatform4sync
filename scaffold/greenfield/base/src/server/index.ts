@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth/better-auth";
 import { resolveTenantFromDomain, setTenantContext } from "@/lib/tenant/context";
 
 // ---------------------------------------------------------------------------
-// Types
+// Types - see shared/contracts/env.ts for canonical Env shape
 // ---------------------------------------------------------------------------
 
 export interface Env {
@@ -124,7 +124,7 @@ export default {
       return Response.json(
         {
           error: "Internal server error",
-          ...(env.ENVIRONMENT !== "production" && {
+          ...(env.ENVIRONMENT === "development" && {
             message: error instanceof Error ? error.message : String(error),
           }),
         },

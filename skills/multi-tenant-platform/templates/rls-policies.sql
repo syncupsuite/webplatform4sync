@@ -25,27 +25,30 @@
 -- Sets the tenant context for the current transaction.
 -- MUST be called at the start of every request.
 -- Uses SET LOCAL so the context is automatically cleared at transaction end.
-CREATE OR REPLACE FUNCTION platform.set_tenant_context(
-    p_tenant_id UUID,
-    p_tenant_tier SMALLINT DEFAULT NULL
-)
+CREATE OR REPLACE FUNCTION platform.set_tenant_context(p_tenant_id UUID)
 RETURNS VOID AS $$
+DECLARE
+    v_tier SMALLINT;
 BEGIN
+    SELECT tier INTO STRICT v_tier
+    FROM platform.tenants
+    WHERE id = p_tenant_id AND status = 'active';
+
     PERFORM set_config('app.tenant_id', p_tenant_id::TEXT, true);
-
-    -- If tier not provided, look it up.
-    IF p_tenant_tier IS NULL THEN
-        SELECT tier INTO p_tenant_tier
-        FROM platform.tenants
-        WHERE id = p_tenant_id;
-    END IF;
-
-    PERFORM set_config('app.tenant_tier', COALESCE(p_tenant_tier::TEXT, '2'), true);
+    PERFORM set_config('app.tenant_tier', v_tier::TEXT, true);
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'Tenant % not found or not active', p_tenant_id;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+REVOKE EXECUTE ON FUNCTION platform.set_tenant_context(UUID) FROM PUBLIC;
+-- Grant only to the application service role:
+-- GRANT EXECUTE ON FUNCTION platform.set_tenant_context(UUID) TO app_service_role;
+
 COMMENT ON FUNCTION platform.set_tenant_context IS
     'Sets app.tenant_id and app.tenant_tier for the current transaction. '
+    'Always looks up the tier from the database and rejects inactive tenants. '
     'Uses SET LOCAL so context auto-clears on transaction end. Must be called '
     'before any tenant-scoped queries.';
 
@@ -83,6 +86,22 @@ $$ LANGUAGE sql STABLE SECURITY DEFINER;
 COMMENT ON FUNCTION platform.is_ancestor_of IS
     'Returns TRUE if p_ancestor is an ancestor of (or equal to) p_descendant. '
     'Uses the closure table for O(1) lookup.';
+
+
+-- Prevent direct manipulation of the closure table.
+-- Only the maintain_tenant_relationships() trigger should insert/update/delete.
+-- NOTE: The trigger function must be SECURITY DEFINER to bypass these restrictive policies.
+CREATE POLICY prevent_direct_closure_write ON platform.tenant_relationships
+    FOR INSERT
+    WITH CHECK (false);
+
+CREATE POLICY prevent_direct_closure_update ON platform.tenant_relationships
+    FOR UPDATE
+    USING (false);
+
+CREATE POLICY prevent_direct_closure_delete ON platform.tenant_relationships
+    FOR DELETE
+    USING (false);
 
 
 -- Helper: get current tenant ID from session context.

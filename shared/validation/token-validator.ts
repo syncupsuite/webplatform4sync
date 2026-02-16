@@ -5,13 +5,10 @@
  * Used in CI/CD pipelines and during scaffold generation.
  */
 
-// --- Types ---
+import type { DTCGToken } from '../contracts/tokens';
+import { walkTokens, PROTECTED_TOKEN_PATHS, REQUIRED_SEMANTIC_TOKENS } from '../contracts/tokens';
 
-interface DTCGToken {
-  $type: string;
-  $value: string;
-  $description?: string;
-}
+// --- Types ---
 
 interface ValidationResult {
   valid: boolean;
@@ -34,23 +31,6 @@ interface ValidationWarning {
 // --- Schema Validation ---
 
 const REQUIRED_TOKEN_TYPES = ['color', 'dimension', 'fontFamily', 'fontWeight', 'number'];
-
-const REQUIRED_SEMANTIC_TOKENS = [
-  'color.primary',
-  'color.accent',
-  'color.background.canvas',
-  'color.background.surface',
-  'color.text.primary',
-  'color.text.secondary',
-  'color.border.default',
-  'color.error',
-  'color.success',
-  'color.warning',
-  'spacing.xs',
-  'spacing.sm',
-  'spacing.md',
-  'spacing.lg',
-];
 
 /**
  * Validate a DTCG token tree for schema compliance.
@@ -105,16 +85,6 @@ export function validateContrast(
 
 // --- Protected Tokens ---
 
-const PROTECTED_PATHS = [
-  'color.semantic.success',
-  'color.semantic.warning',
-  'color.semantic.error',
-  'color.semantic.focus',
-  'spacing.scale',
-  'motion.duration',
-  'accessibility.focusRing',
-];
-
 /**
  * Verify that a tenant override does not modify protected tokens.
  */
@@ -125,7 +95,7 @@ export function validateOverride(
   const warnings: ValidationWarning[] = [];
 
   walkTokens(overrideTokens, '', (path) => {
-    if (PROTECTED_PATHS.some((p) => path.startsWith(p))) {
+    if (PROTECTED_TOKEN_PATHS.some((p) => path.startsWith(p))) {
       errors.push({
         path,
         message: `Cannot override protected token: ${path}`,
@@ -144,21 +114,6 @@ function resolvePath(obj: Record<string, unknown>, path: string): unknown {
     if (acc && typeof acc === 'object') return (acc as Record<string, unknown>)[key];
     return undefined;
   }, obj);
-}
-
-function walkTokens(
-  obj: Record<string, unknown>,
-  prefix: string,
-  callback: (path: string, value: unknown) => void
-): void {
-  for (const [key, value] of Object.entries(obj)) {
-    const path = prefix ? `${prefix}.${key}` : key;
-    if (key.startsWith('$')) continue; // Skip meta fields
-    callback(path, value);
-    if (typeof value === 'object' && value !== null && !('$value' in value)) {
-      walkTokens(value as Record<string, unknown>, path, callback);
-    }
-  }
 }
 
 function hexToRgb(hex: string): [number, number, number] {

@@ -1,3 +1,6 @@
+// Canonical types: see shared/contracts/tenant.ts
+// Canonical RLS variables: see shared/contracts/constants.ts
+
 import type { NeonQueryFunction } from "@neondatabase/serverless";
 
 // ---------------------------------------------------------------------------
@@ -11,14 +14,14 @@ export interface TenantContext {
   name: string;
   /** URL-safe slug */
   slug: string;
-  /** Tier in the hierarchy: platform > enterprise > team */
-  tier: "platform" | "enterprise" | "team";
+  /** Numeric tier: 0 = Platform, 1 = Partner, 2 = Customer */
+  tier: 0 | 1 | 2;
   /** Parent tenant ID (null for platform tier) */
   parentId: string | null;
   /** Current status */
-  status: "active" | "suspended" | "provisioning" | "archived";
+  status: "active" | "suspended" | "provisioning" | "decommissioned";
   /** Row isolation strategy */
-  isolationMode: "shared" | "dedicated";
+  isolationMode: "rls" | "schema" | "database";
   /** Arbitrary metadata */
   metadata: Record<string, unknown>;
 }
@@ -99,13 +102,13 @@ export async function resolveTenantFromDomain(
  *
  * Example RLS policy:
  *   CREATE POLICY tenant_isolation ON {{SCHEMA_NAME}}.items
- *     USING (tenant_id = current_setting('app.current_tenant_id')::uuid);
+ *     USING (tenant_id = current_setting('app.tenant_id')::uuid);
  */
 export async function setTenantContext(
   sql: NeonQueryFunction<false, false>,
   tenantId: string
 ): Promise<void> {
-  await sql`SELECT set_config('app.current_tenant_id', ${tenantId}, true)`;
+  await sql`SELECT set_config('app.tenant_id', ${tenantId}, true)`;
 }
 
 // ---------------------------------------------------------------------------

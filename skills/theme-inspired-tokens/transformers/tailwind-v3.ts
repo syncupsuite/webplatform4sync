@@ -13,27 +13,16 @@
  */
 
 // ---------------------------------------------------------------------------
-// Types -- shared with tailwind-v4.ts
+// Types and utilities from shared contracts
+// ---------------------------------------------------------------------------
+// Canonical definitions: see shared/contracts/tokens.ts
+//
+// When using this transformer standalone, copy types from shared/contracts/tokens.ts.
+// In the marketplace repo, import directly:
 // ---------------------------------------------------------------------------
 
-interface DTCGToken {
-  $type: string;
-  $value: string;
-  $description?: string;
-}
-
-interface DTCGTokenGroup {
-  [key: string]: DTCGToken | DTCGTokenGroup;
-}
-
-interface DTCGRoot {
-  primitive?: DTCGTokenGroup;
-  semantic?: {
-    light?: DTCGTokenGroup;
-    dark?: DTCGTokenGroup;
-  };
-  [key: string]: DTCGTokenGroup | undefined;
-}
+import type { DTCGToken, DTCGTokenGroup, DTCGRoot } from '../../../shared/contracts/tokens';
+import { isToken, flattenTokens, pathToProperty, resolveReference } from '../../../shared/contracts/tokens';
 
 interface TransformV3Options {
   /** Include dark mode semantic mappings. Default: true */
@@ -61,48 +50,6 @@ interface TailwindExtend {
   fontFamily?: Record<string, string[]>;
   fontSize?: Record<string, string>;
   borderRadius?: Record<string, string>;
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function isToken(node: DTCGToken | DTCGTokenGroup): node is DTCGToken {
-  return "$value" in node && "$type" in node;
-}
-
-function flattenTokens(
-  group: DTCGTokenGroup,
-  parentPath: string[] = []
-): Array<[string[], DTCGToken]> {
-  const result: Array<[string[], DTCGToken]> = [];
-
-  for (const [key, value] of Object.entries(group)) {
-    if (key.startsWith("$")) continue;
-    const currentPath = [...parentPath, key];
-
-    if (isToken(value as DTCGToken | DTCGTokenGroup)) {
-      result.push([currentPath, value as DTCGToken]);
-    } else {
-      result.push(
-        ...flattenTokens(value as DTCGTokenGroup, currentPath)
-      );
-    }
-  }
-
-  return result;
-}
-
-function pathToProperty(path: string, prefix: string): string {
-  const segments = path.split(".").join("-");
-  return prefix ? `--${prefix}-${segments}` : `--${segments}`;
-}
-
-function resolveReference(value: string, prefix: string): string {
-  return value.replace(/\{([^}]+)\}/g, (_match, path: string) => {
-    const prop = pathToProperty(path, prefix);
-    return `var(${prop})`;
-  });
 }
 
 // ---------------------------------------------------------------------------
@@ -511,10 +458,8 @@ export function serializeConfigExtend(extend: TailwindExtend): string {
   return lines.join("\n");
 }
 
+export type { DTCGToken, DTCGTokenGroup, DTCGRoot };
 export type {
-  DTCGToken,
-  DTCGTokenGroup,
-  DTCGRoot,
   TransformV3Options,
   TransformV3Result,
   TailwindExtend,

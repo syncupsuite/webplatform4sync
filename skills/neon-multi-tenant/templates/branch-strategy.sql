@@ -42,7 +42,7 @@ CREATE SCHEMA IF NOT EXISTS neon_auth;
 -- these tables without coordinating across all apps.
 
 -- Core user identity. One row per human across all apps.
-CREATE TABLE IF NOT EXISTS neon_auth.users (
+CREATE TABLE IF NOT EXISTS neon_auth.user (
     id         TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
     name       TEXT,
     email      TEXT NOT NULL UNIQUE,
@@ -53,9 +53,9 @@ CREATE TABLE IF NOT EXISTS neon_auth.users (
 );
 
 -- Active sessions. JWT-based, 7-day expiry.
-CREATE TABLE IF NOT EXISTS neon_auth.sessions (
+CREATE TABLE IF NOT EXISTS neon_auth.session (
     id         TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-    user_id    TEXT NOT NULL REFERENCES neon_auth.users(id) ON DELETE CASCADE,
+    user_id    TEXT NOT NULL REFERENCES neon_auth.user(id) ON DELETE CASCADE,
     token      TEXT NOT NULL UNIQUE,
     expires_at TIMESTAMPTZ NOT NULL,
     ip_address TEXT,
@@ -64,13 +64,13 @@ CREATE TABLE IF NOT EXISTS neon_auth.sessions (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON neon_auth.sessions(user_id);
-CREATE INDEX IF NOT EXISTS idx_sessions_token ON neon_auth.sessions(token);
+CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON neon_auth.session(user_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_token ON neon_auth.session(token);
 
 -- OAuth and credential accounts linked to users.
-CREATE TABLE IF NOT EXISTS neon_auth.accounts (
+CREATE TABLE IF NOT EXISTS neon_auth.account (
     id                    TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-    user_id               TEXT NOT NULL REFERENCES neon_auth.users(id) ON DELETE CASCADE,
+    user_id               TEXT NOT NULL REFERENCES neon_auth.user(id) ON DELETE CASCADE,
     account_id            TEXT NOT NULL,
     provider_id           TEXT NOT NULL,
     access_token          TEXT,
@@ -85,10 +85,10 @@ CREATE TABLE IF NOT EXISTS neon_auth.accounts (
     UNIQUE(provider_id, account_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_accounts_user_id ON neon_auth.accounts(user_id);
+CREATE INDEX IF NOT EXISTS idx_accounts_user_id ON neon_auth.account(user_id);
 
 -- Email/phone verification tokens.
-CREATE TABLE IF NOT EXISTS neon_auth.verifications (
+CREATE TABLE IF NOT EXISTS neon_auth.verification (
     id         TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
     identifier TEXT NOT NULL,   -- email or phone
     value      TEXT NOT NULL,   -- verification token/code
@@ -97,10 +97,10 @@ CREATE TABLE IF NOT EXISTS neon_auth.verifications (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE INDEX IF NOT EXISTS idx_verifications_identifier ON neon_auth.verifications(identifier);
+CREATE INDEX IF NOT EXISTS idx_verifications_identifier ON neon_auth.verification(identifier);
 
 -- Organization support (Better Auth organization plugin).
-CREATE TABLE IF NOT EXISTS neon_auth.organizations (
+CREATE TABLE IF NOT EXISTS neon_auth.organization (
     id         TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
     name       TEXT NOT NULL,
     slug       TEXT NOT NULL UNIQUE,
@@ -111,18 +111,18 @@ CREATE TABLE IF NOT EXISTS neon_auth.organizations (
 );
 
 -- Organization membership with roles.
-CREATE TABLE IF NOT EXISTS neon_auth.members (
+CREATE TABLE IF NOT EXISTS neon_auth.member (
     id              TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-    user_id         TEXT NOT NULL REFERENCES neon_auth.users(id) ON DELETE CASCADE,
-    organization_id TEXT NOT NULL REFERENCES neon_auth.organizations(id) ON DELETE CASCADE,
+    user_id         TEXT NOT NULL REFERENCES neon_auth.user(id) ON DELETE CASCADE,
+    organization_id TEXT NOT NULL REFERENCES neon_auth.organization(id) ON DELETE CASCADE,
     role            TEXT NOT NULL DEFAULT 'member',
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
     UNIQUE(user_id, organization_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_members_user_id ON neon_auth.members(user_id);
-CREATE INDEX IF NOT EXISTS idx_members_org_id ON neon_auth.members(organization_id);
+CREATE INDEX IF NOT EXISTS idx_members_user_id ON neon_auth.member(user_id);
+CREATE INDEX IF NOT EXISTS idx_members_org_id ON neon_auth.member(organization_id);
 
 
 -- =============================================================================
@@ -131,22 +131,25 @@ CREATE INDEX IF NOT EXISTS idx_members_org_id ON neon_auth.members(organization_
 -- These ensure users can only access their own auth data, even if
 -- application-level checks fail.
 
-ALTER TABLE neon_auth.users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE neon_auth.sessions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE neon_auth.accounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE neon_auth.user ENABLE ROW LEVEL SECURITY;
+ALTER TABLE neon_auth.user FORCE ROW LEVEL SECURITY;
+ALTER TABLE neon_auth.session ENABLE ROW LEVEL SECURITY;
+ALTER TABLE neon_auth.session FORCE ROW LEVEL SECURITY;
+ALTER TABLE neon_auth.account ENABLE ROW LEVEL SECURITY;
+ALTER TABLE neon_auth.account FORCE ROW LEVEL SECURITY;
 
 -- Users can read their own profile.
-CREATE POLICY users_self_read ON neon_auth.users
+CREATE POLICY users_self_read ON neon_auth.user
     FOR SELECT
     USING (id = current_setting('app.user_id', true));
 
 -- Sessions are visible only to the owning user.
-CREATE POLICY sessions_self_read ON neon_auth.sessions
+CREATE POLICY sessions_self_read ON neon_auth.session
     FOR SELECT
     USING (user_id = current_setting('app.user_id', true));
 
 -- Accounts are visible only to the owning user.
-CREATE POLICY accounts_self_read ON neon_auth.accounts
+CREATE POLICY accounts_self_read ON neon_auth.account
     FOR SELECT
     USING (user_id = current_setting('app.user_id', true));
 
@@ -178,6 +181,7 @@ CREATE TABLE IF NOT EXISTS brandsyncup.organizations (
 CREATE INDEX IF NOT EXISTS idx_orgs_tenant ON brandsyncup.organizations(tenant_id);
 
 ALTER TABLE brandsyncup.organizations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE brandsyncup.organizations FORCE ROW LEVEL SECURITY;
 
 -- T2 isolation: customers see only their own organization data.
 CREATE POLICY tenant_isolation ON brandsyncup.organizations
@@ -201,6 +205,7 @@ CREATE TABLE IF NOT EXISTS legalsyncup.matters (
 CREATE INDEX IF NOT EXISTS idx_matters_tenant ON legalsyncup.matters(tenant_id);
 
 ALTER TABLE legalsyncup.matters ENABLE ROW LEVEL SECURITY;
+ALTER TABLE legalsyncup.matters FORCE ROW LEVEL SECURITY;
 
 CREATE POLICY tenant_isolation ON legalsyncup.matters
     FOR ALL

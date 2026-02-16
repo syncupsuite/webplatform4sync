@@ -1,3 +1,6 @@
+// Canonical types: see shared/contracts/auth.ts for AuthLevel, AuthState, etc.
+// This skill re-exports from firebase-bridge.ts but the canonical source is contracts.
+
 /**
  * Cloudflare Worker Auth Middleware
  *
@@ -52,7 +55,7 @@ export interface AuthContext {
   state: AuthState;
   /** Resolved auth level (shorthand for state.level) */
   level: AuthLevel;
-  /** Tenant ID if resolved (from auth state or request header) */
+  /** Tenant ID if resolved (from authenticated session only) */
   tenantId?: string;
   /** Whether the user has at least the given auth level */
   hasLevel(required: AuthLevel): boolean;
@@ -70,8 +73,6 @@ export interface AuthMiddlewareOptions {
   sessionCookieName?: string;
   /** Cookie name for preview sessions (default: 'syncup_preview') */
   previewCookieName?: string;
-  /** Header name for tenant context (default: 'x-tenant-id') */
-  tenantHeader?: string;
   /** Firebase project ID for token verification (optional, for Bearer tokens) */
   firebaseProjectId?: string;
 }
@@ -98,11 +99,11 @@ function meetsLevel(current: AuthLevel, required: AuthLevel): boolean {
 // Auth Context Factory
 // ---------------------------------------------------------------------------
 
-function createAuthContext(state: AuthState, tenantId?: string): AuthContext {
+function createAuthContext(state: AuthState): AuthContext {
   return {
     state,
     level: state.level,
-    tenantId: tenantId || (state.level === AuthLevel.FULL ? state.tenantId : undefined),
+    tenantId: state.level === AuthLevel.FULL ? state.tenantId : undefined,
     hasLevel(required: AuthLevel): boolean {
       return meetsLevel(state.level, required);
     },
@@ -190,6 +191,7 @@ async function resolveFromBearerToken(
           provider: claims.sign_in_provider || 'firebase',
           providerId: claims.uid,
           email: claims.email,
+          emailVerified: claims.email_verified === true,
           name: claims.name,
           picture: claims.picture,
         };
@@ -226,6 +228,7 @@ async function resolveFromSessionToken(
         provider: string;
         providerId: string;
         email: string;
+        emailVerified?: boolean;
         name?: string;
         picture?: string;
         expiresAt: number;
@@ -237,6 +240,7 @@ async function resolveFromSessionToken(
           provider: session.provider,
           providerId: session.providerId,
           email: session.email,
+          emailVerified: session.emailVerified === true,
           name: session.name,
           picture: session.picture,
         };
@@ -283,8 +287,8 @@ async function resolveFromPreviewToken(
 /**
  * Verify a Better Auth session token and return FULL auth state.
  *
- * This is a placeholder — the actual implementation depends on your
- * Better Auth configuration. Replace with your session verification logic.
+ * This MUST be implemented before use. The stub throws to prevent
+ * silent authentication bypass.
  */
 async function verifyBetterAuthSession(
   token: string,
@@ -313,8 +317,11 @@ async function verifyBetterAuthSession(
   //   tenantRole: roles[0],
   // };
 
-  // Stub — implement based on your Better Auth setup
-  return null;
+  throw new Error(
+    'verifyBetterAuthSession() is not implemented. ' +
+    'You MUST implement this function to validate Better Auth sessions. ' +
+    'See: skills/graduated-auth/references/auth-layers.md'
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -379,11 +386,8 @@ export async function createPreviewSession(
  */
 export function authMiddleware(options: AuthMiddlewareOptions) {
   return async (c: HonoContext, next: () => Promise<void>) => {
-    const tenantHeader = options.tenantHeader ?? 'x-tenant-id';
-    const tenantId = c.req.header(tenantHeader) || undefined;
-
     const state = await resolveAuthState(c.req.raw, options);
-    const auth = createAuthContext(state, tenantId);
+    const auth = createAuthContext(state);
 
     c.set('auth', auth);
     await next();
@@ -473,10 +477,8 @@ export async function resolveAuth(
   request: Request,
   options: AuthMiddlewareOptions
 ): Promise<AuthContext> {
-  const tenantHeader = options.tenantHeader ?? 'x-tenant-id';
-  const tenantId = request.headers.get(tenantHeader) || undefined;
   const state = await resolveAuthState(request, options);
-  return createAuthContext(state, tenantId);
+  return createAuthContext(state);
 }
 
 // ---------------------------------------------------------------------------

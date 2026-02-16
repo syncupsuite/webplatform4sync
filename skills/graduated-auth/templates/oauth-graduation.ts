@@ -45,6 +45,7 @@ export interface OAuthProfile {
   provider: OAuthProvider;
   providerId: string;
   email: string;
+  emailVerified: boolean;
   name?: string;
   picture?: string;
   accessToken: string;
@@ -57,6 +58,7 @@ export interface OAuthSession {
   provider: OAuthProvider;
   providerId: string;
   email: string;
+  emailVerified: boolean;
   name?: string;
   picture?: string;
   createdAt: number;
@@ -210,6 +212,8 @@ async function exchangeGoogleCode(
   const profile = (await profileResponse.json()) as {
     id: string;
     email: string;
+    verified_email?: boolean;
+    email_verified?: boolean;
     name?: string;
     picture?: string;
   };
@@ -218,6 +222,7 @@ async function exchangeGoogleCode(
     provider: 'google',
     providerId: profile.id,
     email: profile.email,
+    emailVerified: profile.verified_email ?? profile.email_verified ?? false,
     name: profile.name,
     picture: profile.picture,
     accessToken: tokens.access_token,
@@ -282,23 +287,33 @@ async function exchangeGitHubCode(
 
   // GitHub may not return email in profile — fetch from emails endpoint
   let email = profile.email;
-  if (!email) {
-    const emailsResponse = await fetch('https://api.github.com/user/emails', {
-      headers: {
-        Authorization: `Bearer ${tokens.access_token}`,
-        Accept: 'application/vnd.github+json',
-        'User-Agent': 'SyncUpSuite-OAuth',
-      },
-    });
+  let emailVerified = false;
 
-    if (emailsResponse.ok) {
-      const emails = (await emailsResponse.json()) as Array<{
-        email: string;
-        primary: boolean;
-        verified: boolean;
-      }>;
-      const primary = emails.find((e) => e.primary && e.verified);
-      email = primary?.email || emails.find((e) => e.verified)?.email;
+  // Always fetch from emails endpoint to get verification status
+  const emailsResponse = await fetch('https://api.github.com/user/emails', {
+    headers: {
+      Authorization: `Bearer ${tokens.access_token}`,
+      Accept: 'application/vnd.github+json',
+      'User-Agent': 'SyncUpSuite-OAuth',
+    },
+  });
+
+  if (emailsResponse.ok) {
+    const emails = (await emailsResponse.json()) as Array<{
+      email: string;
+      primary: boolean;
+      verified: boolean;
+    }>;
+    const primary = emails.find((e) => e.primary && e.verified);
+    if (primary) {
+      email = primary.email;
+      emailVerified = true;
+    } else {
+      const verified = emails.find((e) => e.verified);
+      if (verified) {
+        email = email || verified.email;
+        emailVerified = true;
+      }
     }
   }
 
@@ -310,6 +325,7 @@ async function exchangeGitHubCode(
     provider: 'github',
     providerId: String(profile.id),
     email,
+    emailVerified,
     name: profile.name || profile.login,
     picture: profile.avatar_url,
     accessToken: tokens.access_token,
@@ -344,6 +360,7 @@ export async function createLightweightSession(
     provider: profile.provider,
     providerId: profile.providerId,
     email: profile.email,
+    emailVerified: profile.emailVerified,
     name: profile.name,
     picture: profile.picture,
     createdAt: now,
@@ -392,6 +409,7 @@ export function sessionToAuthState(session: OAuthSession): OAuthAuth {
     provider: session.provider,
     providerId: session.providerId,
     email: session.email,
+    emailVerified: session.emailVerified,
     name: session.name,
     picture: session.picture,
   };
@@ -472,6 +490,7 @@ export async function checkExistingAccount(
     provider: profile.provider,
     providerId: profile.providerId,
     email: profile.email,
+    emailVerified: profile.emailVerified,
     name: profile.name,
     picture: profile.picture,
   };
@@ -504,11 +523,25 @@ export async function checkExistingAccount(
 export async function handleOAuthCallback(
   provider: OAuthProvider,
   code: string,
-  config: OAuthGraduationConfig
+  config: OAuthGraduationConfig,
+  state?: string,
+  expectedState?: string
 ): Promise<{
   authState: OAuthAuth | FullAuth;
-  cookie: { name: string; value: string; maxAge: number };
+  cookie: {
+    name: string;
+    value: string;
+    maxAge: number;
+    httpOnly: boolean;
+    secure: boolean;
+    sameSite: 'Lax';
+    path: string;
+  };
 }> {
+  if (!state || state !== expectedState) {
+    throw new Error('Invalid OAuth state parameter — possible CSRF attack');
+  }
+
   const cookieName = config.sessionCookieName ?? 'syncup_session';
   const profile = await exchangeCodeForProfile(provider, code, config);
 
@@ -521,6 +554,10 @@ export async function handleOAuthCallback(
         name: cookieName,
         value: existingResult.sessionToken,
         maxAge: 7 * 24 * 60 * 60, // 7 days
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Lax' as const,
+        path: '/',
       },
     };
   }
@@ -533,6 +570,10 @@ export async function handleOAuthCallback(
       name: cookieName,
       value: sessionId,
       maxAge: config.sessionTtlSeconds ?? 7 * 24 * 60 * 60,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Lax' as const,
+      path: '/',
     },
   };
 }

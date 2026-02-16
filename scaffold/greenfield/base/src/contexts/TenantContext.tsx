@@ -1,3 +1,5 @@
+// Canonical types: see shared/contracts/tenant.ts
+
 import {
   createContext,
   useContext,

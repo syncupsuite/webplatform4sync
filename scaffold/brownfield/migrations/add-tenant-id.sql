@@ -5,7 +5,7 @@
 -- (Uses the tenant schema from skills/multi-tenant-platform/templates/tenant-schema.sql)
 
 -- Step 2: Create a default tenant for existing data
-INSERT INTO tenants (id, tier, name, slug, status, isolation_mode)
+INSERT INTO platform.tenants (id, tier, name, slug, status, isolation_mode)
 VALUES (
   '00000000-0000-0000-0000-000000000001',
   0,
@@ -37,5 +37,5 @@ VALUES (
 --   AND table_schema = '{{SCHEMA_NAME}}';
 
 -- Step 5: Add tenant_id to the closure table for the default tenant
-INSERT INTO tenant_relationships (tenant_id, ancestor_id, depth)
+INSERT INTO platform.tenant_relationships (ancestor_id, descendant_id, depth)
 VALUES ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 0);

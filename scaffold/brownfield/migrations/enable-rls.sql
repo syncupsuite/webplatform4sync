@@ -1,5 +1,6 @@
 -- Migration: Enable Row-Level Security on existing tables
 -- Run AFTER add-tenant-id.sql and thorough testing
+-- Canonical RLS variable: app.tenant_id (see shared/contracts/constants.ts)
 
 -- Step 1: Create the tenant context function (if not exists)
 CREATE OR REPLACE FUNCTION current_tenant_id()

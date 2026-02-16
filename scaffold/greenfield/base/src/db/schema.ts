@@ -1,3 +1,5 @@
+// Canonical types: see shared/contracts/tenant.ts
+
 import {
   pgSchema,
   uuid,
@@ -7,7 +9,7 @@ import {
   jsonb,
   boolean,
   integer,
-  pgEnum,
+  smallint,
   uniqueIndex,
   index,
 } from "drizzle-orm/pg-core";
@@ -23,22 +25,19 @@ export const appSchema = pgSchema("{{SCHEMA_NAME}}");
 // Enums
 // ---------------------------------------------------------------------------
 
-export const tenantTierEnum = appSchema.enum("tenant_tier", [
-  "platform",   // Tier 0: platform-level (SyncUpSuite itself)
-  "enterprise", // Tier 1: enterprise customer
-  "team",       // Tier 2: team within an enterprise
-]);
+// Tenant tier is numeric: 0 = Platform, 1 = Partner, 2 = Customer
 
 export const tenantStatusEnum = appSchema.enum("tenant_status", [
   "active",
   "suspended",
   "provisioning",
-  "archived",
+  "decommissioned",
 ]);
 
 export const isolationModeEnum = appSchema.enum("isolation_mode", [
-  "shared",     // Shared schema, RLS-isolated rows
-  "dedicated",  // Dedicated schema per tenant (future)
+  "rls",        // Shared schema, RLS-isolated rows
+  "schema",     // Dedicated schema per tenant
+  "database",   // Dedicated database per tenant
 ]);
 
 // ---------------------------------------------------------------------------
@@ -49,7 +48,8 @@ export const tenants = appSchema.table(
   "tenants",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    tier: tenantTierEnum("tier").notNull().default("team"),
+    /** Numeric tier: 0 = Platform, 1 = Partner, 2 = Customer */
+    tier: smallint("tier").notNull().default(2),
     parentId: uuid("parent_id").references((): any => tenants.id, {
       onDelete: "restrict",
     }),
@@ -58,7 +58,7 @@ export const tenants = appSchema.table(
     status: tenantStatusEnum("status").notNull().default("active"),
     isolationMode: isolationModeEnum("isolation_mode")
       .notNull()
-      .default("shared"),
+      .default("rls"),
     metadata: jsonb("metadata").$type<Record<string, unknown>>().default({}),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()

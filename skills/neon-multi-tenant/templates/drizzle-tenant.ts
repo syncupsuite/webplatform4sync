@@ -1,16 +1,20 @@
+// Canonical types: see shared/contracts/tenant.ts (TenantDbContext)
+// Canonical RLS variables: see shared/contracts/constants.ts
+// Canonical auth tables: see shared/contracts/auth.ts (AUTH_TABLES)
+
 /**
  * Drizzle ORM Multi-Tenant Configuration for Neon PostgreSQL
  *
  * This module provides:
- * 1. Tenant-scoped Drizzle client factory
- * 2. Schema definitions with tenant_id on all tables
- * 3. Automatic tenant_id injection via SQL SET and query hooks
- * 4. Connection setup for Neon serverless driver + Hyperdrive
- * 5. Type-safe tenant context
+ * 1. Schema definitions with tenant_id on all tables
+ * 2. Tenant-scoped query helper (tenantQuery) for safe RLS enforcement
+ * 3. Connection setup for Neon serverless driver + Hyperdrive
+ * 4. Type-safe tenant context
  *
  * Usage:
- *   const db = createTenantClient(connectionString, tenantId);
- *   const results = await db.select().from(documents);
+ *   const results = await tenantQuery(connString, ctx, (db) =>
+ *     db.select().from(documents)
+ *   );
  *   // Automatically filtered by tenant_id via RLS
  */
 
@@ -26,7 +30,7 @@ import {
   jsonb,
   index,
 } from 'drizzle-orm/pg-core';
-import { sql, eq, and } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 
 // =============================================================================
 // 1. Schema Definitions
@@ -50,10 +54,10 @@ export const authSchema = pgSchema('neon_auth');
 // =============================================================================
 
 /**
- * Reference to neon_auth.users for JOINs.
+ * Reference to neon_auth.user for JOINs.
  * Do NOT use this for inserts/updates -- auth mutations go through Better Auth.
  */
-export const authUsers = authSchema.table('users', {
+export const authUser = authSchema.table('user', {
   id: text('id').primaryKey(),
   name: text('name'),
   email: text('email').notNull().unique(),
@@ -63,9 +67,9 @@ export const authUsers = authSchema.table('users', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-export const authSessions = authSchema.table('sessions', {
+export const authSession = authSchema.table('session', {
   id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => authUsers.id),
+  userId: text('user_id').notNull().references(() => authUser.id),
   token: text('token').notNull().unique(),
   expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
   ipAddress: text('ip_address'),
@@ -112,7 +116,7 @@ export const documents = appSchema.table(
     title: text('title').notNull(),
     content: jsonb('content').default({}),
     status: text('status').notNull().default('draft'),
-    createdBy: text('created_by').references(() => authUsers.id),
+    createdBy: text('created_by').references(() => authUser.id),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
@@ -127,7 +131,7 @@ export const documents = appSchema.table(
 // 4. Tenant Context Type
 // =============================================================================
 
-export interface TenantContext {
+export interface TenantDbContext {
   /** The tenant UUID for RLS filtering */
   tenantId: string;
   /** The authenticated user ID (from Better Auth session) */
@@ -162,54 +166,15 @@ export function createBaseClient(connectionString: string): NeonHttpDatabase {
   return drizzle(sql);
 }
 
-// =============================================================================
-// 6. Tenant-Scoped Client Factory
-// =============================================================================
-
-/**
- * Create a tenant-scoped Drizzle client.
- *
- * This sets PostgreSQL session variables (`app.tenant_id`, `app.user_id`)
- * that RLS policies reference. Every query through this client runs
- * within the tenant's security boundary.
- *
- * @param connectionString - Database connection string
- * @param context - Tenant context with tenantId and userId
- * @returns Drizzle database client with tenant context set
- *
- * @example
- * ```typescript
- * // In a Cloudflare Worker request handler:
- * const db = await createTenantClient(
- *   env.HYPERDRIVE.connectionString,
- *   { tenantId: session.tenantId, userId: session.userId }
- * );
- *
- * // All queries are automatically scoped to the tenant via RLS
- * const docs = await db.select().from(documents);
- * ```
- */
-export async function createTenantClient(
-  connectionString: string,
-  context: TenantContext
-): Promise<NeonHttpDatabase> {
-  const sqlClient = createNeonClient(connectionString);
-  const db = drizzle(sqlClient);
-
-  // Set the tenant context for RLS policies.
-  // These session variables are read by PostgreSQL RLS policies
-  // (e.g., current_setting('app.tenant_id')).
-  //
-  // NOTE: With Neon's HTTP driver, each query is a separate transaction.
-  // We must set the context on every query batch. For single queries,
-  // use the helper functions below which prepend the SET commands.
-  await db.execute(
-    sql`SELECT set_config('app.tenant_id', ${context.tenantId}, false),
-               set_config('app.user_id', ${context.userId}, false)`
-  );
-
-  return db;
-}
+// ---------------------------------------------------------------------------
+// REMOVED: createTenantClient()
+// ---------------------------------------------------------------------------
+// The createTenantClient() function was removed because it is fundamentally
+// broken with the Neon HTTP driver. Each db.execute() call is a separate
+// HTTP request (separate transaction), so set_config() in one call is NOT
+// available in subsequent calls. Use tenantQuery() instead, which wraps
+// context setup and query in a single transaction.
+// ---------------------------------------------------------------------------
 
 // =============================================================================
 // 7. Query Helpers with Tenant Context
@@ -234,7 +199,7 @@ export async function createTenantClient(
  */
 export async function tenantQuery<T>(
   connectionString: string,
-  context: TenantContext,
+  context: TenantDbContext,
   queryFn: (db: NeonHttpDatabase) => Promise<T>
 ): Promise<T> {
   const sqlClient = createNeonClient(connectionString);
@@ -272,7 +237,7 @@ export async function tenantQuery<T>(
 export async function tenantInsert<T extends { tenantId: string }>(
   db: NeonHttpDatabase,
   table: any,
-  context: TenantContext,
+  context: TenantDbContext,
   values: Omit<T, 'tenantId' | 'id' | 'createdAt' | 'updatedAt'>
 ): Promise<T[]> {
   return db
@@ -379,6 +344,6 @@ export const schema = {
   documents,
 
   // Auth tables (read-only references, not managed by Drizzle)
-  authUsers,
-  authSessions,
+  authUser,
+  authSession,
 };

@@ -15,6 +15,8 @@ import {
  * Graduated auth levels allow pages to render with decreasing
  * privilege. A marketing page works at ANONYMOUS; a dashboard
  * requires FULL.
+ *
+ * Canonical definition: see shared/contracts/auth.ts
  */
 export enum AuthLevel {
   /** No authentication - public content */

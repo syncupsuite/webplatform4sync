@@ -1,5 +1,7 @@
 /*
- * Platform Default Design Tokens
+ * Platform default design tokens.
+ * Canonical token schema: see shared/contracts/tokens.ts
+ * Token paths follow DTCG convention: primitive.<domain>.<name>.<scale>
  *
  * Neutral foundation tokens for SyncUpSuite projects.
  * Override with a cultural-overlay.css for themed variants

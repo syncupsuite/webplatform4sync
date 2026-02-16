@@ -9,91 +9,23 @@
  */
 
 // ---------------------------------------------------------------------------
-// Types
+// Types and utilities from shared contracts
+// ---------------------------------------------------------------------------
+// Canonical definitions: see shared/contracts/tokens.ts
+//
+// When using this transformer standalone (outside the marketplace repo),
+// copy these types from shared/contracts/tokens.ts:
+//   DTCGToken, DTCGTokenGroup, DTCGRoot, TransformOptions,
+//   isToken, flattenTokens, pathToProperty, resolveReference
+//
+// In the marketplace repo, import directly:
+//   import { DTCGToken, DTCGTokenGroup, DTCGRoot, TransformOptions,
+//            isToken, flattenTokens, pathToProperty, resolveReference
+//          } from '../../shared/contracts/tokens';
 // ---------------------------------------------------------------------------
 
-interface DTCGToken {
-  $type: string;
-  $value: string;
-  $description?: string;
-}
-
-interface DTCGTokenGroup {
-  [key: string]: DTCGToken | DTCGTokenGroup;
-}
-
-interface DTCGRoot {
-  primitive?: DTCGTokenGroup;
-  semantic?: {
-    light?: DTCGTokenGroup;
-    dark?: DTCGTokenGroup;
-  };
-  [key: string]: DTCGTokenGroup | undefined;
-}
-
-interface TransformOptions {
-  /** Include dark mode semantic mappings. Default: true */
-  darkMode?: boolean;
-  /** Dark mode strategy: 'class' uses [data-theme="dark"], 'media' uses prefers-color-scheme. Default: 'class' */
-  darkModeStrategy?: "class" | "media";
-  /** Include source comments with $description. Default: true */
-  includeComments?: boolean;
-  /** Prefix for CSS custom properties. Default: '' (no prefix) */
-  prefix?: string;
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function isToken(node: DTCGToken | DTCGTokenGroup): node is DTCGToken {
-  return "$value" in node && "$type" in node;
-}
-
-/**
- * Resolve DTCG references like {primitive.color.neutral.900} to
- * CSS custom property references like var(--primitive-color-neutral-900).
- */
-function resolveReference(value: string, prefix: string): string {
-  return value.replace(/\{([^}]+)\}/g, (_match, path: string) => {
-    const prop = pathToProperty(path, prefix);
-    return `var(${prop})`;
-  });
-}
-
-/**
- * Convert a dot-separated token path to a CSS custom property name.
- * "primitive.color.hanada.500" -> "--primitive-color-hanada-500"
- */
-function pathToProperty(path: string, prefix: string): string {
-  const segments = path.split(".").join("-");
-  return prefix ? `--${prefix}-${segments}` : `--${segments}`;
-}
-
-/**
- * Recursively flatten a DTCG token group into an array of [path, token] pairs.
- */
-function flattenTokens(
-  group: DTCGTokenGroup,
-  parentPath: string[] = []
-): Array<[string[], DTCGToken]> {
-  const result: Array<[string[], DTCGToken]> = [];
-
-  for (const [key, value] of Object.entries(group)) {
-    if (key.startsWith("$")) continue;
-    const currentPath = [...parentPath, key];
-
-    if (isToken(value as DTCGToken | DTCGTokenGroup)) {
-      result.push([currentPath, value as DTCGToken]);
-    } else {
-      result.push(
-        ...flattenTokens(value as DTCGTokenGroup, currentPath)
-      );
-    }
-  }
-
-  return result;
-}
+import type { DTCGToken, DTCGTokenGroup, DTCGRoot, TransformOptions } from '../../../shared/contracts/tokens';
+import { isToken, flattenTokens, pathToProperty, resolveReference } from '../../../shared/contracts/tokens';
 
 /**
  * Format a CSS custom property declaration with optional comment.

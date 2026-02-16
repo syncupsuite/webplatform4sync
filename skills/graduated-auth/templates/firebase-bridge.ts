@@ -82,6 +82,7 @@ export interface OAuthAuth {
   provider: string;
   providerId: string;
   email: string;
+  emailVerified: boolean;
   name?: string;
   picture?: string;
 }
@@ -330,6 +331,10 @@ export async function graduateToFullAccount(
     throw new Error('Firebase token missing email claim — cannot graduate');
   }
 
+  if (!claims.email_verified) {
+    throw new Error('Email not verified — cannot graduate to full account');
+  }
+
   // Step 2: Check for existing Better Auth account
   let userId: string;
   let isNewAccount = false;
@@ -337,20 +342,11 @@ export async function graduateToFullAccount(
   const existingUser = await betterAuth.findUserByEmail(claims.email);
 
   if (existingUser) {
-    userId = existingUser.id;
-
-    // Link Firebase provider if not already linked
-    if (claims.sign_in_provider) {
-      try {
-        await betterAuth.linkAccount({
-          userId,
-          provider: claims.sign_in_provider,
-          providerAccountId: claims.uid,
-        });
-      } catch {
-        // Account may already be linked — not an error
-      }
-    }
+    // Security: Do not auto-link accounts by email. The user must authenticate
+    // into the existing account first, then link the new provider explicitly.
+    throw new Error(
+      'An account with this email already exists. Sign in to the existing account first, then link your Firebase identity.'
+    );
   } else {
     // Step 3: Create new Better Auth account
     const newUser = await betterAuth.createUser({
@@ -445,7 +441,7 @@ export async function graduateFromOAuth(
       email: oauthState.email,
       name: oauthState.name,
       image: oauthState.picture,
-      emailVerified: true, // OAuth email is verified by provider
+      emailVerified: oauthState.emailVerified === true,
     });
     userId = newUser.id;
     isNewAccount = true;
