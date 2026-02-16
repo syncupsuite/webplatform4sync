@@ -5,7 +5,7 @@
 Internal platform standards, skills, and scaffold templates for all SyncUpSuite projects. This repo defines **the standard** that every project — greenfield or brownfield — aligns to.
 
 **Org**: `syncupsuite`
-**Prefix**: `hn-` = internal (habitusnet), `p--` = public release
+**Prefix**: `hn-` = internal (syncupsuite), `p--` = public release
 **Public target**: `p--platform4sync` (after validation)
 
 ---

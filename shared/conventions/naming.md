@@ -24,7 +24,7 @@ repo name = domain name = Google project ID
 
 | Prefix | Meaning | Visibility |
 |--------|---------|------------|
-| `hn-` | Internal (habitusnet) | Private |
+| `hn-` | Internal (syncupsuite) | Private |
 | `p--` | Public release | Public |
 | `su-` | SyncUp product repos | Private (existing convention) |
 

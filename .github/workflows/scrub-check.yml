@@ -1,0 +1,53 @@
+# This workflow runs on the PUBLIC repo (p--platform4sync) to ensure
+# no private data was accidentally included during sync from the internal repo.
+#
+# Copy this file to p--platform4sync/.github/workflows/ during initial setup.
+
+name: Private Data Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  scrub-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for private infrastructure IDs
+        run: |
+          echo "Checking for private data leaks..."
+
+          PATTERNS=(
+            "polished-truth-90679079"      # Neon project ID
+            "br-damp-dust-agvnfraf"        # Neon branch ID
+            "br-broad-heart-aglkic7z"      # Neon branch ID
+            "br-cool-bird-agmnaox6"        # Neon branch ID
+            "br-polished-sun-ag8a15yi"     # Neon branch ID
+            "6b078bcaa9984a2d1dbe483e65c741b0"  # Cloudflare account ID
+            "43b75292cfc44ed5b0483a1a030dee9f"  # KV namespace ID
+            "d98679b9c4084f11bca2b9679f3d1e5e"  # Hyperdrive ID
+            "habitusnet"                    # Internal org name
+            "HabitusNet"                    # Internal org name
+            "for-syncup\.md"               # Internal-only file reference
+          )
+
+          FOUND=0
+          for PATTERN in "${PATTERNS[@]}"; do
+            if grep -rn "$PATTERN" --include="*.md" --include="*.ts" --include="*.sql" --include="*.json" --include="*.yml" --include="*.yaml" . 2>/dev/null; then
+              echo "FOUND: $PATTERN"
+              FOUND=1
+            fi
+          done
+
+          if [ "$FOUND" -eq 1 ]; then
+            echo ""
+            echo "ERROR: Private data detected in public repo."
+            echo "Run the scrub script or manually replace the values above."
+            exit 1
+          fi
+
+          echo "CLEAN - no private data found."

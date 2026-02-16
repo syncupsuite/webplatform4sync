@@ -1,0 +1,36 @@
+# GitHub Repository Metadata
+# Apply via: gh repo edit syncupsuite/hn-platform4sync [flags]
+# Or manually in GitHub Settings > General
+
+description: "Internal platform standards, skills, and scaffold templates for SyncUpSuite multi-tenant SaaS projects"
+
+topics:
+  - claude-code-skills
+  - multi-tenant
+  - saas-platform
+  - cloudflare-workers
+  - neon-postgres
+  - design-tokens
+  - row-level-security
+  - better-auth
+  - scaffold-templates
+  - edge-computing
+  - dtcg-tokens
+  - drizzle-orm
+  - react
+  - typescript
+  - tailwind-css
+
+homepage: ""
+
+# Visibility: private (internal repo)
+# Public counterpart: syncupsuite/p--platform4sync (when ready)
+
+features:
+  wiki: false
+  issues: true
+  projects: false
+  discussions: false
+
+# Branch protection
+default_branch: main

@@ -27,7 +27,7 @@ T2  Customer / End-User Org (many per T1)
 
 | Tier | Role | Examples |
 |------|------|----------|
-| **T0** | Platform operator. Owns infrastructure, defines global policies, manages T1 onboarding. | HabitusNet, the SaaS company itself |
+| **T0** | Platform operator. Owns infrastructure, defines global policies, manages T1 onboarding. | SyncUpSuite, the platform operator |
 | **T1** | Partner or reseller. Operates a branded instance, manages their own T2 customers. | A consulting firm reselling the platform |
 | **T2** | Customer organization. End-users belong here. All application data lives at this tier. | A law firm, a brand team, a small business |
 
