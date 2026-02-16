@@ -5,8 +5,8 @@
 Internal platform standards, skills, and scaffold templates for all SyncUpSuite projects. This repo defines **the standard** that every project — greenfield or brownfield — aligns to.
 
 **Org**: `syncupsuite`
-**Prefix**: `hn-` = internal (syncupsuite), `p--` = public release
-**Public target**: `p--platform4sync` (after validation)
+**Prefix**: `hn-` = internal
+**Public counterpart**: [`syncupsuite/webplatform4sync`](https://github.com/syncupsuite/webplatform4sync)
 
 ---
 

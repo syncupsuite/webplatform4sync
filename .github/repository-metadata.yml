@@ -24,7 +24,7 @@ topics:
 homepage: ""
 
 # Visibility: private (internal repo)
-# Public counterpart: syncupsuite/p--platform4sync (when ready)
+# Public counterpart: syncupsuite/webplatform4sync
 
 features:
   wiki: false

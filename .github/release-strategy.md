@@ -7,9 +7,9 @@ Platform4Sync exists as two repositories under the `syncupsuite` GitHub organiza
 | Repo | Visibility | Purpose |
 |------|-----------|---------|
 | `syncupsuite/hn-platform4sync` | Private | Internal development, real infrastructure references, SyncUp-specific integration notes |
-| `syncupsuite/p--platform4sync` | Public | Community release, genericized examples, no infrastructure IDs |
+| `syncupsuite/webplatform4sync` | Public | Community release, genericized examples, no infrastructure IDs |
 
-Both repos live under `syncupsuite`. The `hn-` prefix denotes internal use. The `p--` prefix denotes public release.
+Both repos live under `syncupsuite`. The `hn-` prefix denotes internal use. `webplatform4sync` is the public release.
 
 ---
 
@@ -81,7 +81,7 @@ These files exist only in `hn-platform4sync` and are excluded from the public re
 
 ```bash
 # 1. Create the public repo
-gh repo create syncupsuite/p--platform4sync --public --description "Platform standards, skills, and scaffold templates for multi-tenant SaaS on Cloudflare Workers + Neon PostgreSQL"
+gh repo create syncupsuite/webplatform4sync --public --description "Platform standards, skills, and scaffold templates for multi-tenant SaaS on Cloudflare Workers + Neon PostgreSQL"
 
 # 2. Clone internal repo to a working directory
 git clone git@github.com:syncupsuite/hn-platform4sync.git /tmp/p4s-release
@@ -94,7 +94,7 @@ cd /tmp/p4s-release
 grep -rn "polished-truth\|habitusnet\|6b078bca\|43b75292\|d98679b9\|br-damp-dust\|br-broad-heart\|br-cool-bird\|br-polished-sun" .
 
 # 5. Set new remote and push
-git remote set-url origin git@github.com:syncupsuite/p--platform4sync.git
+git remote set-url origin git@github.com:syncupsuite/webplatform4sync.git
 git push -u origin main
 ```
 
@@ -149,7 +149,7 @@ jobs:
 | `docs/for-syncup.md` | Real infra IDs, gap analysis, migration priorities |
 | `.github/release-strategy.md` | This document |
 
-### Scrubbed for Public (p--platform4sync)
+### Scrubbed for Public (webplatform4sync)
 
 | File | Changes |
 |------|---------|

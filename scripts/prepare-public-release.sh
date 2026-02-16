@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Prepare a working copy of hn-platform4sync for public release as p--platform4sync.
+# Prepare a working copy of hn-platform4sync for public release as webplatform4sync.
 #
 # Usage:
 #   git clone git@github.com:syncupsuite/hn-platform4sync.git /tmp/p4s-release
 #   cd /tmp/p4s-release
 #   ./scripts/prepare-public-release.sh
-#   # Verify, then push to p--platform4sync
+#   # Verify, then push to webplatform4sync
 
 echo "=== Platform4Sync Public Release Preparation ==="
 echo ""
@@ -67,11 +67,9 @@ echo "  Replaced all infrastructure IDs"
 # -----------------------------------------------------------------------
 echo "[3/5] Replacing internal org references..."
 
-# hn- prefix explanations in CLAUDE.md (handles both old and current forms)
-sed -i '' 's/\*\*Prefix\*\*: `hn-` = internal (syncupsuite), `p--` = public release/\*\*Public release target\*\*: `p--platform4sync`/' \
-  CLAUDE.md
-sed -i '' 's/\*\*Prefix\*\*: `hn-` = internal (habitusnet), `p--` = public release/\*\*Public release target\*\*: `p--platform4sync`/' \
-  CLAUDE.md
+# Remove hn- prefix and internal references from CLAUDE.md
+sed -i '' '/\*\*Prefix\*\*: `hn-` = internal/d' CLAUDE.md
+sed -i '' 's|Public counterpart.*webplatform4sync.*|**Repo**: `syncupsuite/webplatform4sync`|' CLAUDE.md
 
 # naming.md: remove internal prefix rows (handles both old and current forms)
 sed -i '' '/| `hn-` | Internal (syncupsuite) | Private |/d' shared/conventions/naming.md
@@ -138,5 +136,5 @@ if grep -rn "$PATTERNS" --include="*.md" --include="*.ts" --include="*.sql" --in
 else
   echo "CLEAN — no private data found."
   echo ""
-  echo "Ready to push to syncupsuite/p--platform4sync"
+  echo "Ready to push to syncupsuite/webplatform4sync"
 fi

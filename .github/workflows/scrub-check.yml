@@ -1,7 +1,7 @@
-# This workflow runs on the PUBLIC repo (p--platform4sync) to ensure
+# This workflow runs on the PUBLIC repo (webplatform4sync) to ensure
 # no private data was accidentally included during sync from the internal repo.
 #
-# Copy this file to p--platform4sync/.github/workflows/ during initial setup.
+# Copy this file to webplatform4sync/.github/workflows/ during initial setup.
 
 name: Private Data Check
 
