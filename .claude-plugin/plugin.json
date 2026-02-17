@@ -1,16 +1,5 @@
 {
   "name": "webplatform4sync",
   "version": "0.2.0",
-  "description": "9-step guided workflow for Platform4Sync standard stack adoption",
-  "commands": [
-    "../commands/wp4s1_discover.md",
-    "../commands/wp4s2_scaffold.md",
-    "../commands/wp4s3_tenant.md",
-    "../commands/wp4s4_database.md",
-    "../commands/wp4s5_auth.md",
-    "../commands/wp4s6_tokens.md",
-    "../commands/wp4s7_deploy.md",
-    "../commands/wp4s8_validate.md",
-    "../commands/wp4s9_status.md"
-  ]
+  "description": "9-step guided workflow for Platform4Sync standard stack adoption"
 }
