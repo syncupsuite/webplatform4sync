@@ -1,6 +1,0 @@
-{
-  "name": "multi-tenant-platform",
-  "version": "0.1.0",
-  "description": "3-tier multi-tenant architecture patterns with RLS, tenant hierarchy, and white-label support",
-  "commands": ["./skill.md"]
-}

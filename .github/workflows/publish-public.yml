@@ -1,0 +1,97 @@
+# Publish scrubbed content from hn-platform4sync (private) to webplatform4sync (public).
+#
+# How to use:
+#   1. Go to Actions tab → "Publish to webplatform4sync" → "Run workflow"
+#   2. Enter the version number (e.g., 0.2.0) — do NOT include the "v" prefix
+#   3. Optionally check "dry_run" to test the scrub without pushing
+#   4. Click "Run workflow"
+#
+# What it does:
+#   - Runs prepare-public-release.sh to strip private data (infra IDs, internal refs)
+#   - Commits the scrubbed state and force-pushes to webplatform4sync
+#   - Tags with vX.Y.Z (triggers the release workflow on the public repo)
+#
+# Prerequisites:
+#   - PUBLIC_REPO_TOKEN secret: a fine-grained PAT with Contents write access
+#     to syncupsuite/webplatform4sync. See .github/release-strategy.md for setup.
+#
+# Before running:
+#   - Update CHANGELOG.md with the new version's changes
+#   - Update version in .claude-plugin/marketplace.json (and plugin.json files if needed)
+
+name: Publish to webplatform4sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Semver version to release (e.g., 0.2.0)'
+        required: true
+        type: string
+      dry_run:
+        description: 'Dry run — scrub and verify only, do not push'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate version
+        run: |
+          VERSION="${{ inputs.version }}"
+          if ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$'; then
+            echo "ERROR: '$VERSION' is not valid semver (expected X.Y.Z or X.Y.Z-prerelease)"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Run scrub script
+        run: |
+          chmod +x scripts/prepare-public-release.sh
+          ./scripts/prepare-public-release.sh
+
+      - name: Show scrub diff
+        run: git diff --stat
+
+      - name: Push to webplatform4sync
+        if: ${{ !inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+          git commit -m "feat: Platform4Sync v${VERSION}
+
+          Published from hn-platform4sync via automated workflow.
+
+          Co-Authored-By: github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/syncupsuite/webplatform4sync.git"
+          git push -u origin main --force
+
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}"
+
+          echo "## Published v${VERSION}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Repo: https://github.com/syncupsuite/webplatform4sync" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Release: https://github.com/syncupsuite/webplatform4sync/releases/tag/v${VERSION}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Dry run summary
+        if: ${{ inputs.dry_run }}
+        run: |
+          echo "## Dry Run Complete" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Scrub passed. No changes were pushed." >> "$GITHUB_STEP_SUMMARY"
+          echo "Re-run without dry_run to publish v${VERSION}." >> "$GITHUB_STEP_SUMMARY"

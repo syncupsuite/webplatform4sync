@@ -5,41 +5,16 @@
     "email": "dev@syncupsuite.com"
   },
   "metadata": {
-    "description": "Platform standards, skills, and scaffold templates for multi-tenant SaaS on Cloudflare Workers + Neon PostgreSQL",
-    "version": "0.1.0"
+    "description": "Guided workflow for deploying multi-tenant SaaS on the Platform4Sync standard stack",
+    "version": "0.2.0"
   },
   "plugins": [
     {
-      "name": "multi-tenant-platform",
-      "source": "./skills/multi-tenant-platform",
-      "description": "3-tier multi-tenant architecture patterns with RLS, tenant hierarchy, and white-label support",
-      "version": "0.1.0",
-      "keywords": ["multi-tenant", "saas", "rls", "architecture"],
-      "category": "architecture"
-    },
-    {
-      "name": "graduated-auth",
-      "source": "./skills/graduated-auth",
-      "description": "Graduated authentication from anonymous to full account without friction walls",
-      "version": "0.1.0",
-      "keywords": ["auth", "better-auth", "firebase", "oauth"],
-      "category": "authentication"
-    },
-    {
-      "name": "neon-multi-tenant",
-      "source": "./skills/neon-multi-tenant",
-      "description": "Neon PostgreSQL multi-tenant patterns with branch isolation, Hyperdrive, and Drizzle ORM",
-      "version": "0.1.0",
-      "keywords": ["neon", "postgresql", "drizzle", "hyperdrive"],
-      "category": "database"
-    },
-    {
-      "name": "theme-inspired-tokens",
-      "source": "./skills/theme-inspired-tokens",
-      "description": "Culturally-grounded design token systems with W3C DTCG alignment and Style Dictionary",
-      "version": "0.1.0",
-      "keywords": ["design-tokens", "dtcg", "style-dictionary", "theming"],
-      "category": "design"
+      "name": "webplatform4sync",
+      "source": ".",
+      "description": "9-step guided workflow for Platform4Sync standard stack adoption",
+      "version": "0.2.0",
+      "keywords": ["multi-tenant", "saas", "cloudflare-workers", "neon-postgres", "firebase"]
     }
   ]
 }
