@@ -11,7 +11,7 @@
   "plugins": [
     {
       "name": "webplatform4sync",
-      "source": ".",
+      "source": "./",
       "description": "9-step guided workflow for Platform4Sync standard stack adoption",
       "version": "0.2.0",
       "keywords": ["multi-tenant", "saas", "cloudflare-workers", "neon-postgres", "firebase"]
