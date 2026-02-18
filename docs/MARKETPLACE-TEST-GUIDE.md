@@ -215,7 +215,7 @@ npm info @syncupsuite/transformers version # should return 0.1.1
 npm info @syncupsuite/themes version      # should return 0.1.1
 ```
 
-> **Note**: 0.1.1 publish is pending (npm token 2FA bypass configuration — see `su-prd-mgmt/docs/PUBLISHING.md`). Until published, 0.1.0 is the live version. Update this check once 0.1.1 is confirmed on npm.
+> **Published**: 0.1.1 is live on npm as of 2026-02-18.
 
 ### 4.1 CSS Import Test
 
