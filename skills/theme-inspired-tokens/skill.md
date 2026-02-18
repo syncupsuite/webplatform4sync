@@ -6,6 +6,41 @@ A Claude Code skill for generating culturally-grounded design token systems wher
 
 ---
 
+## Quick Start (pre-built)
+
+`@syncupsuite/themes` provides pre-built implementations of this pattern. If you want production-ready cultural themes without building from scratch, install the package:
+
+```bash
+npm install @syncupsuite/themes
+```
+
+**CSS usage** -- import directly into your stylesheet:
+
+```css
+@import '@syncupsuite/themes/swiss-international/tailwind.css';
+/* or */
+@import '@syncupsuite/themes/nihon-traditional/tailwind.css';
+```
+
+**TypeScript usage** -- access token objects programmatically:
+
+```typescript
+import { swissInternational } from '@syncupsuite/themes';
+import { buildTokens } from '@syncupsuite/transformers';
+```
+
+Available pre-built themes: `swiss-international`, `nihon-traditional`.
+
+> **Skill vs. Package**: The package ships curated implementations. This skill teaches you to build your own -- custom cultural tokens from any tradition, following the same four-layer pattern. Use the package for speed; use this skill when you need a theme that doesn't exist yet.
+
+---
+
+## Build Your Own
+
+If you need a custom cultural design system, follow the workflow below.
+
+---
+
 ## Invocation
 
 ```
