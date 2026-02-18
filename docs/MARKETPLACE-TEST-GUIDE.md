@@ -209,11 +209,13 @@ grep -c "^| \*\*ID\*\*" skills/theme-inspired-tokens/references/theme-registry.m
 The marketplace README references these npm packages. Verify they are published:
 
 ```bash
-npm info @syncupsuite/tokens version      # should return 0.1.0
-npm info @syncupsuite/foundations version # should return 0.1.0
-npm info @syncupsuite/transformers version # should return 0.1.0
-npm info @syncupsuite/themes version      # should return 0.1.0
+npm info @syncupsuite/tokens version      # should return 0.1.1
+npm info @syncupsuite/foundations version # should return 0.1.1
+npm info @syncupsuite/transformers version # should return 0.1.1
+npm info @syncupsuite/themes version      # should return 0.1.1
 ```
+
+> **Note**: 0.1.1 publish is pending (npm token 2FA bypass configuration — see `su-prd-mgmt/docs/PUBLISHING.md`). Until published, 0.1.0 is the live version. Update this check once 0.1.1 is confirmed on npm.
 
 ### 4.1 CSS Import Test
 
@@ -311,6 +313,6 @@ Run this checklist before any marketplace release:
 - [ ] `theme-inspired-tokens/skill.md` has Quick Start section with `@syncupsuite/themes`
 - [ ] `theme-registry.md` has at least 5 foundations with complete seed color data
 - [ ] `README.md` has npm Packages section with themes listing
-- [ ] `@syncupsuite/themes@0.1.0` is live on npm (`npm info @syncupsuite/themes`)
+- [ ] `@syncupsuite/themes@0.1.1` is live on npm (`npm info @syncupsuite/themes`)
 - [ ] No real credentials or project IDs in any public file
 - [ ] `docs/contributing.md` sync audit is up to date

@@ -11,8 +11,10 @@ A Claude Code skill for generating culturally-grounded design token systems wher
 `@syncupsuite/themes` provides pre-built implementations of this pattern. If you want production-ready cultural themes without building from scratch, install the package:
 
 ```bash
-npm install @syncupsuite/themes
+npm install @syncupsuite/themes   # v0.1.1 — security-audited, 195 tests, zero runtime deps
 ```
+
+> **Package quality**: v0.1.1 has been through a comprehensive review — P0 CSS generation bugs fixed, P1 security hardening (CSS injection prevention), PERF_BUDGETS enforced, and 7 Architecture Decision Records (ADR-001 through ADR-007) governing all major design decisions. See `syncupsuite/themes/docs/adr/` for full detail.
 
 **CSS usage** -- import directly into your stylesheet:
 
@@ -112,6 +114,8 @@ See `references/theme-registry.md` for curated foundations.
 ### Layer 2: Color Expansion (System)
 
 Each seed color expands into a 9-step lightness scale using HSL manipulation.
+
+> **Roadmap note**: HSL is the current implementation. OKLCH migration is planned (ADR-001) before themes 3-10 are added — OKLCH produces perceptually uniform lightness scales across hues where HSL does not. Custom themes built now may require value recalculation after the OKLCH migration.
 
 **Lightness scale**:
 
@@ -405,9 +409,9 @@ Before tokens are accepted, the following checks MUST pass:
 
 1. **Schema validation**: All tokens have `$type`, `$value`, `$description`
 2. **Semantic completeness**: Every required semantic token is mapped
-3. **Accessibility (WCAG AA)**: `text.primary` on `background.canvas` >= 4.5:1 contrast ratio
-4. **Accessibility (WCAG AA)**: `text.secondary` on `background.canvas` >= 4.5:1 contrast ratio
-5. **Accessibility (WCAG AA)**: `interactive.primary` on `background.canvas` >= 3:1 contrast ratio (large text / UI components)
+3. **Accessibility (WCAG AA)**: `text.primary` on `background.canvas` >= 4.5:1 contrast ratio *(schema-validated at build time; automated contrast computation planned — see ADR-005)*
+4. **Accessibility (WCAG AA)**: `text.secondary` on `background.canvas` >= 4.5:1 contrast ratio *(see ADR-005)*
+5. **Accessibility (WCAG AA)**: `interactive.primary` on `background.canvas` >= 3:1 contrast ratio *(see ADR-005)*
 6. **Dark mode parity**: Every light semantic token has a dark counterpart
 7. **Cultural provenance**: Every seed color has a non-empty `provenance` object
 8. **Protected tokens**: No T1/T2 override of protected paths
