@@ -12,9 +12,9 @@
     {
       "name": "webplatform4sync",
       "source": "./",
-      "description": "9-step guided workflow for Platform4Sync standard stack adoption",
-      "version": "0.2.0",
-      "keywords": ["multi-tenant", "saas", "cloudflare-workers", "neon-postgres", "firebase", "design-tokens", "themes", "cultural-design"]
+      "description": "Platform4Sync skill surface for multi-tenant SaaS on Cloudflare + Neon. Choose your frame: Construction (site → pour → frame → wire → finish) or Shu-Ha-Ri (shu → ha → ri). Same tools, different approaches.",
+      "version": "0.3.0",
+      "keywords": ["multi-tenant", "saas", "cloudflare-workers", "neon-postgres", "firebase", "design-tokens", "themes", "cultural-design", "construction-frame", "shu-ha-ri", "command-frames"]
     }
   ]
 }

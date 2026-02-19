@@ -1,0 +1,76 @@
+{
+  "id": "construction",
+  "displayName": "Construction Milestones",
+  "tagline": "Site. Pour. Frame. Wire. Finish.",
+  "version": "1.0.0",
+  "activationCommands": ["site", "pour", "frame", "wire", "finish"],
+  "frameFile": "frames/construction/frame.md",
+  "onboardFile": "frames/construction/onboard.md",
+  "stages": {
+    "site": {
+      "label": "Site Preparation",
+      "description": "Clear the ground. Survey the lot. Initialize the environment. Nothing load-bearing yet.",
+      "gate": "Directory exists, stack initialized, environment wired, ready to pour.",
+      "commands": {
+        "init":     { "skill": "@syncupsuite/init-stack",                         "label": "Interactive multi-service stack setup (GitHub, GCP, Firebase, Neon, Cloudflare, Doppler)" },
+        "envrc":    { "skill": "@syncupsuite/setup-project-envrc",                "label": "Create or update .envrc with standardized env config" },
+        "tune":     { "skill": "@syncupsuite/optimize-onboarding",                "label": "Analyze and optimize Claude Code config for this stack" },
+        "clear":    { "skill": "@syncupsuite/repo-cleanup",                       "label": "Find and remove space-wasting artifacts from repos" },
+        "scaffold": { "skill": "scaffold/greenfield/scaffold.md",                 "label": "Scaffold new project — greenfield, brownfield, or overlay" }
+      }
+    },
+    "pour": {
+      "label": "Foundation Pour",
+      "description": "Platform core and data layer. The foundation determines everything above it. Pour before you frame.",
+      "gate": "Tenant model defined, database migrated, RLS enforced, platform core holds load.",
+      "commands": {
+        "platform": { "skill": "skills/multi-tenant-platform/skill.md",           "label": "3-tier multi-tenant architecture design and implementation" },
+        "neon":     { "skill": "skills/neon-multi-tenant/skill.md",               "label": "Neon PostgreSQL: schema, RLS, branch isolation, Drizzle ORM" },
+        "arch":     { "skill": "architecture-introspector:architecture-introspector", "label": "Analyze existing architecture, identify load-bearing decisions" }
+      }
+    },
+    "frame": {
+      "label": "Structural Framing",
+      "description": "Auth, API, and edge infrastructure. The skeleton defines the shape of everything that follows.",
+      "gate": "Auth graduated, edge functions deployed, API routes defined, shape is clear.",
+      "commands": {
+        "auth":     { "skill": "skills/graduated-auth/skill.md",                  "label": "Anonymous → OAuth → Full Account graduation model" },
+        "worker":   { "skill": "cloudflare:workers-best-practices",               "label": "Cloudflare Workers — author and review against production standards" },
+        "agent":    { "skill": "cloudflare:building-ai-agent-on-cloudflare",      "label": "Stateful AI agent with Agents SDK (state, WebSockets, tools)" },
+        "mcp":      { "skill": "cloudflare:building-mcp-server-on-cloudflare",    "label": "Remote MCP server with OAuth on Cloudflare Workers" },
+        "do":       { "skill": "cloudflare:durable-objects",                      "label": "Durable Objects for stateful coordination (chat, booking, SQLite)" },
+        "api":      { "skill": "api-scaffolding:fastapi-templates",               "label": "Production-ready API scaffolding with async patterns" }
+      }
+    },
+    "wire": {
+      "label": "Electrical & Plumbing",
+      "description": "CI/CD, secrets, and integrations. Wire runs through the frame. Know where the walls are before you wire.",
+      "gate": "CI green on every push, deploy gated, secrets injected cleanly, types strict.",
+      "commands": {
+        "ci":       { "skill": "cicd-automation:github-actions-templates",        "label": "GitHub Actions pipeline for test / build / deploy" },
+        "deploy":   { "skill": "cicd-automation:deployment-pipeline-design",      "label": "Multi-stage deployment with approval gates and GitOps" },
+        "secrets":  { "skill": "cicd-automation:secrets-management",              "label": "Secrets management via Doppler / Vault / native platform" },
+        "ts":       { "skill": "javascript-typescript:typescript-advanced-types",  "label": "TypeScript type system hardening — generics, conditional types, strict mode" },
+        "test":     { "skill": "javascript-typescript:javascript-testing-patterns","label": "Test infrastructure: Vitest, Testing Library, TDD/BDD patterns" }
+      }
+    },
+    "finish": {
+      "label": "Interior Finish",
+      "description": "Design, accessibility, observability, and ship. The building is structural. Now it becomes livable.",
+      "gate": "Design identity live, WCAG passes, system observes itself, shipped to production.",
+      "commands": {
+        "tokens":   { "skill": "skills/theme-inspired-tokens/skill.md",           "label": "Culturally-grounded design token system (DTCG JSON + React artifact)" },
+        "theme":    { "skill": "skills/theme-inspired-tokens/skill.md",           "label": "Full theme: token system + identity picker + live preview" },
+        "ui":       { "skill": "frontend-design:frontend-design",                 "label": "Web components and pages requiring distinctive visual design" },
+        "a11y":     { "skill": "accessibility-compliance:wcag-audit-patterns",    "label": "WCAG 2.2 audit with automated testing and remediation guidance" },
+        "sr":       { "skill": "accessibility-compliance:screen-reader-testing",  "label": "VoiceOver / NVDA / JAWS compatibility validation" },
+        "watch":    { "skill": "observability-monitoring:grafana-dashboards",     "label": "Production Grafana dashboards for real-time metrics" },
+        "metrics":  { "skill": "observability-monitoring:prometheus-configuration","label": "Prometheus metric collection, storage, and alerting" },
+        "slo":      { "skill": "observability-monitoring:slo-implementation",     "label": "SLIs, SLOs, and error budgets" },
+        "trace":    { "skill": "observability-monitoring:distributed-tracing",    "label": "Distributed tracing with Jaeger / Tempo" },
+        "perf":     { "skill": "cloudflare:web-perf",                             "label": "Core Web Vitals audit via Chrome DevTools (FCP, LCP, CLS, TBT)" },
+        "ship":     { "skill": "cicd-automation:deployment-pipeline-design",      "label": "Final deploy — production gate, npm publish if applicable" }
+      }
+    }
+  }
+}
