@@ -1,0 +1,59 @@
+{
+  "id": "shuhari",
+  "displayName": "Shu-Ha-Ri",
+  "tagline": "Follow the pattern. Break it. Transcend it.",
+  "version": "1.0.0",
+  "activationCommands": ["shu", "ha", "ri"],
+  "frameFile": "frames/shuhari/frame.md",
+  "onboardFile": "frames/shuhari/onboard.md",
+  "note": "Unlike Construction, stages apply per-concern — a project can be in Shu on auth and Ha on design simultaneously. Do not enforce global linear progression.",
+  "stages": {
+    "shu": {
+      "label": "Follow",
+      "description": "Adopt established patterns without modification. Learn by doing it the right way first.",
+      "gate": "The pattern is in place. The scaffold is aligned. You know why it is the way it is.",
+      "commands": {
+        "init":     { "skill": "@syncupsuite/init-stack",                          "label": "Interactive multi-service stack setup — GitHub, GCP, Firebase, Neon, Cloudflare, Doppler" },
+        "envrc":    { "skill": "@syncupsuite/setup-project-envrc",                 "label": "Create or update .envrc with standardized environment config" },
+        "tune":     { "skill": "@syncupsuite/optimize-onboarding",                 "label": "Analyze and optimize Claude Code configuration for this project's stack" },
+        "clean":    { "skill": "@syncupsuite/repo-cleanup",                        "label": "Find and remove space-wasting artifacts from repos" },
+        "scaffold": { "skill": "scaffold/greenfield/scaffold.md",                  "label": "Scaffold a new project — greenfield (new), brownfield (existing), or overlay (tokens only)" }
+      }
+    },
+    "ha": {
+      "label": "Break",
+      "description": "Deviate from the pattern with intention. You understand it — now build something that is yours.",
+      "gate": "The deviation is deliberate and documented. The system reflects your unique requirements.",
+      "commands": {
+        "platform": { "skill": "skills/multi-tenant-platform/skill.md",            "label": "3-tier multi-tenant architecture — customize the hierarchy to your domain" },
+        "neon":     { "skill": "skills/neon-multi-tenant/skill.md",                "label": "Neon PostgreSQL — schema, RLS, branch isolation, Drizzle ORM" },
+        "auth":     { "skill": "skills/graduated-auth/skill.md",                   "label": "Graduated auth — customize the graduation spectrum for your product" },
+        "worker":   { "skill": "cloudflare:workers-best-practices",                "label": "Cloudflare Workers — build and review against production standards" },
+        "agent":    { "skill": "cloudflare:building-ai-agent-on-cloudflare",       "label": "Stateful AI agent with Agents SDK — state, WebSockets, tool calling" },
+        "mcp":      { "skill": "cloudflare:building-mcp-server-on-cloudflare",     "label": "Remote MCP server with OAuth on Cloudflare Workers" },
+        "do":       { "skill": "cloudflare:durable-objects",                       "label": "Durable Objects — stateful coordination, SQLite, alarms, WebSockets" },
+        "api":      { "skill": "api-scaffolding:fastapi-templates",                "label": "Production API scaffolding — async patterns, dependency injection" },
+        "tokens":   { "skill": "skills/theme-inspired-tokens/skill.md",            "label": "Culturally-grounded design token system — every decision has a source" },
+        "theme":    { "skill": "skills/theme-inspired-tokens/skill.md",            "label": "Full theme: token system + identity picker + live preview before commit" }
+      }
+    },
+    "ri": {
+      "label": "Transcend",
+      "description": "You are no longer thinking about individual components. You operate the whole system.",
+      "gate": "The system observes itself, ships reliably, and can be handed to the next developer.",
+      "commands": {
+        "flow":     { "skill": "cicd-automation:github-actions-templates",         "label": "GitHub Actions pipeline — test, build, and deploy as one continuous motion" },
+        "ship":     { "skill": "cicd-automation:deployment-pipeline-design",       "label": "Multi-stage deployment with approval gates and GitOps — the system deploys itself" },
+        "secrets":  { "skill": "cicd-automation:secrets-management",               "label": "Secrets management — Doppler injection, rotation, CI integration" },
+        "watch":    { "skill": "observability-monitoring:grafana-dashboards",      "label": "Production Grafana dashboards — the system sees itself" },
+        "metrics":  { "skill": "observability-monitoring:prometheus-configuration", "label": "Prometheus metric collection, storage, and alerting" },
+        "slo":      { "skill": "observability-monitoring:slo-implementation",      "label": "SLIs, SLOs, error budgets — reliability as a first-class property" },
+        "trace":    { "skill": "observability-monitoring:distributed-tracing",     "label": "Distributed tracing — understand the system as requests move through it" },
+        "perf":     { "skill": "cloudflare:web-perf",                              "label": "Core Web Vitals audit — the system performs for the people using it" },
+        "a11y":     { "skill": "accessibility-compliance:wcag-audit-patterns",     "label": "WCAG 2.2 audit — the system is accessible to everyone" },
+        "sr":       { "skill": "accessibility-compliance:screen-reader-testing",   "label": "Screen reader testing — VoiceOver, NVDA, JAWS" },
+        "publish":  { "skill": "@syncupsuite/publish",                             "label": "Publish packages to npm — the work outlives this context" }
+      }
+    }
+  }
+}

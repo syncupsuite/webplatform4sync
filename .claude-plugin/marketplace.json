@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Guided workflow for deploying multi-tenant SaaS on the Platform4Sync standard stack",
-    "version": "0.2.0"
+    "version": "0.4.0"
   },
   "plugins": [
     {
       "name": "webplatform4sync",
       "source": "./",
       "description": "Platform4Sync skill surface for multi-tenant SaaS on Cloudflare + Neon. Choose your frame: Construction (site → pour → frame → wire → finish) or Shu-Ha-Ri (shu → ha → ri). Same tools, different approaches.",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "keywords": ["multi-tenant", "saas", "cloudflare-workers", "neon-postgres", "firebase", "design-tokens", "themes", "cultural-design", "construction-frame", "shu-ha-ri", "command-frames"]
     }
   ]
