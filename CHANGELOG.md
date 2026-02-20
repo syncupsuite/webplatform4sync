@@ -4,6 +4,63 @@ All notable changes to Platform4Sync will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] - 2026-02-20
+
+### Added
+
+- **Command frames** — two installable mental models over the same skill surface. The frame changes command names, stage groupings, instructional voice, and sequencing rules. The underlying skills do not change.
+- **Construction frame** (`site → pour → frame → wire → finish`) — physical build sequence with hard stage dependencies. Five commands cover all skills:
+  - `site` — project setup: `init`, `envrc`, `tune`, `clear`, `scaffold`
+  - `pour` — foundation: `platform`, `neon`, `arch`
+  - `frame` — structure: `auth`, `worker`, `agent`, `mcp`, `do`, `api`
+  - `wire` — connections: `ci`, `deploy`, `secrets`, `ts`, `test`
+  - `finish` — craft and ship: `tokens`, `theme`, `ui`, `a11y`, `sr`, `watch`, `metrics`, `slo`, `trace`, `perf`, `ship`
+- **Shu-Ha-Ri frame** (`shu → ha → ri`) — mastery progression per concern. Stages apply independently — a project can be in Shu on auth and Ri on delivery simultaneously. Three commands:
+  - `shu` — follow: `init`, `envrc`, `tune`, `clean`, `scaffold`
+  - `ha` — break: `platform`, `neon`, `auth`, `worker`, `agent`, `mcp`, `do`, `api`, `tokens`, `theme`
+  - `ri` — transcend: `flow`, `ship`, `secrets`, `watch`, `metrics`, `slo`, `trace`, `perf`, `a11y`, `sr`, `publish`
+- `frames/README.md` — frame concept, activation instructions
+- `frames/construction/frame.json` — Construction manifest (command → skill routing, gate conditions)
+- `frames/construction/frame.md` — Construction activation prompt: voice per stage, sequencing rules, gate checks, status display format
+- `frames/construction/onboard.md` — Construction first-run wizard
+- `frames/shuhari/frame.json` — Shu-Ha-Ri manifest with per-concern mastery model
+- `frames/shuhari/frame.md` — Shu-Ha-Ri activation prompt: voice per stage, non-linear progression model, Ri quality test
+- `frames/shuhari/onboard.md` — Shu-Ha-Ri first-run wizard (mastery assessment, not binary completion scan)
+
+### Changed
+
+- **README** reoriented around frame selection as the first decision — includes full command reference tables for both frames
+- **`.claude-plugin/plugin.json`** updated to v0.4.0 with `frames` registry and unified `commands` list
+- **`.claude-plugin/marketplace.json`** updated to v0.4.0 with frame-aware description
+
+### Deprecated
+
+- `wp4s1_discover` through `wp4s9_status` — all 9 numbered commands now open with a deprecation notice and exact forwarding instructions to the equivalent frame commands. Content preserved. Removal scheduled after one full project cycle with frames in use.
+
+  | Deprecated | Construction equivalent | Shu-Ha-Ri equivalent |
+  |-----------|------------------------|---------------------|
+  | `wp4s1_discover` | `site` → `init` / `scaffold` | `shu` → `init` / `scaffold` |
+  | `wp4s2_scaffold` | `site` → `scaffold` | `shu` → `scaffold` |
+  | `wp4s3_tenant` | `pour` → `platform` | `ha` → `platform` |
+  | `wp4s4_database` | `pour` → `neon` | `ha` → `neon` |
+  | `wp4s5_auth` | `frame` → `auth` | `ha` → `auth` |
+  | `wp4s6_tokens` | `finish` → `tokens` / `theme` | `ha` → `tokens` / `theme` |
+  | `wp4s7_deploy` | `wire` → `ci` + `finish` → `ship` | `ri` → `flow` / `ship` |
+  | `wp4s8_validate` | `finish` → `a11y` / `watch` | `ri` → `a11y` / `watch` |
+  | `wp4s9_status` | bare stage command | bare `shu` command |
+
+---
+
+## [0.3.0] - 2026-02-20
+
+### Added
+
+- Construction frame initial implementation (promoted to 0.4.0 in same session when Shu-Ha-Ri shipped)
+
+> Note: 0.3.0 was an intermediate state during the same development session. Both frames shipped together as 0.4.0. This entry is recorded for commit history accuracy.
+
+---
+
 ## [0.2.0] - 2026-02-17
 
 ### Changed
