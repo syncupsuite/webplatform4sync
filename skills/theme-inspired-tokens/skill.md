@@ -8,13 +8,27 @@ A Claude Code skill for generating culturally-grounded design token systems wher
 
 ## Quick Start (pre-built)
 
+> **Upgrading from v0.2.0?** Versions before v0.2.2 have broken subpath exports. Run `npm install @syncupsuite/themes@latest` to fix, then run `/webplatform4sync:diagnose-tokens` to audit your integration.
+
 `@syncupsuite/themes` provides pre-built implementations of this pattern. If you want production-ready cultural themes without building from scratch, install the package:
 
 ```bash
-npm install @syncupsuite/themes   # v0.2.2 — OKLCH color math, security-audited, zero runtime deps
+npm install @syncupsuite/themes@^0.2.2   # OKLCH color math, security-audited, zero runtime deps
 ```
 
 > **Package quality**: v0.1.1 has been through a comprehensive review — P0 CSS generation bugs fixed, P1 security hardening (CSS injection prevention), PERF_BUDGETS enforced, and 7 Architecture Decision Records (ADR-001 through ADR-007) governing all major design decisions. See `syncupsuite/themes/docs/adr/` for full detail.
+
+### Tailwind Compatibility
+
+Choose the transformer that matches your Tailwind version. Using the wrong one is a silent failure -- utilities register but resolve to nothing.
+
+| Tailwind Version | Transformer | Dark Mode Selector | Config File |
+|-----------------|-------------|-------------------|-------------|
+| v4 (CSS-first, no config file) | `tailwind-v4` | `[data-theme="dark"]` | None -- uses `@theme` in CSS |
+| v3 (`tailwind.config.js`) | `tailwind-v3` | `.dark` | `tailwind.config.js` with `darkMode: 'class'` |
+| v3 + `darkMode: 'media'` | `tailwind-v3` | `@media (prefers-color-scheme: dark)` | `tailwind.config.js` with `darkMode: 'media'` |
+
+**How to detect your version**: If you have a `tailwind.config.js` or `tailwind.config.ts` file, you're on v3. If your CSS has `@import "tailwindcss"` and `@theme { }` blocks with no config file, you're on v4.
 
 **CSS usage** -- import directly into your stylesheet:
 
