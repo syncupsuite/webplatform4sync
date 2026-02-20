@@ -61,6 +61,7 @@
       "commands": {
         "tokens":   { "skill": "skills/theme-inspired-tokens/skill.md",           "label": "Culturally-grounded design token system (DTCG JSON + React artifact)" },
         "theme":    { "skill": "skills/theme-inspired-tokens/skill.md",           "label": "Full theme: token system + identity picker + live preview" },
+        "diagnose": { "skill": "skills/theme-inspired-tokens/skill.md#diagnose", "label": "Diagnose broken token installation — version, CSS vars, contrast, dark mode" },
         "ui":       { "skill": "frontend-design:frontend-design",                 "label": "Web components and pages requiring distinctive visual design" },
         "a11y":     { "skill": "accessibility-compliance:wcag-audit-patterns",    "label": "WCAG 2.2 audit with automated testing and remediation guidance" },
         "sr":       { "skill": "accessibility-compliance:screen-reader-testing",  "label": "VoiceOver / NVDA / JAWS compatibility validation" },

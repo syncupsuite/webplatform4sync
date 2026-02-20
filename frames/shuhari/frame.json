@@ -34,7 +34,8 @@
         "do":       { "skill": "cloudflare:durable-objects",                       "label": "Durable Objects — stateful coordination, SQLite, alarms, WebSockets" },
         "api":      { "skill": "api-scaffolding:fastapi-templates",                "label": "Production API scaffolding — async patterns, dependency injection" },
         "tokens":   { "skill": "skills/theme-inspired-tokens/skill.md",            "label": "Culturally-grounded design token system — every decision has a source" },
-        "theme":    { "skill": "skills/theme-inspired-tokens/skill.md",            "label": "Full theme: token system + identity picker + live preview before commit" }
+        "theme":    { "skill": "skills/theme-inspired-tokens/skill.md",            "label": "Full theme: token system + identity picker + live preview before commit" },
+        "diagnose": { "skill": "skills/theme-inspired-tokens/skill.md#diagnose", "label": "Diagnose broken token installation — version, CSS vars, contrast, dark mode" }
       }
     },
     "ri": {

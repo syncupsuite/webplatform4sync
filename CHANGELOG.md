@@ -4,6 +4,18 @@ All notable changes to Platform4Sync will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.4.1] - 2026-02-21
+
+### Token Integration Reliability
+
+- **Integration validation gates** (`skills/theme-inspired-tokens/skill.md`) — mandatory pre-apply and post-apply checks between generating tokens and declaring completion:
+  - Pre-apply: Tailwind version detection, dark mode strategy detection, transformer-strategy mismatch detection, CSS naming conflict scan
+  - Post-apply: `:root` completeness (the #1 silent failure mode), dark mode block 1:1 parity, `var()` circular reference detection, WCAG AA contrast ratio validation on all semantic text+background pairs, dark mode toggle wiring reminder
+  - Completion gate: skill does not declare done until all checks pass
+- **`diagnose-tokens` subcommand** — read-only 9-step diagnostic for existing installations: package version, CSS entry point, `:root` completeness, dark mode block, circular `var()` references, strategy alignment, semantic pairing, contrast ratios, typography loading. Outputs `[PASS]`/`[FAIL]`/`[WARN]` per check with specific fix instructions
+- **Frame integration** — added `diagnose` command to Construction frame (`finish` stage) and Shu-Ha-Ri frame (`ha` stage)
+- *(0.4.0+gt-ti003)* Pinned `@syncupsuite/themes` install to `@^0.2.2`, added Tailwind compatibility matrix with transformer/selector mapping table, added upgrade notice for pre-0.2.2 versions
+
 ## [0.4.0] - 2026-02-20
 
 ### Added
