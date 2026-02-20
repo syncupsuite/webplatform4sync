@@ -11,7 +11,7 @@ A Claude Code skill for generating culturally-grounded design token systems wher
 `@syncupsuite/themes` provides pre-built implementations of this pattern. If you want production-ready cultural themes without building from scratch, install the package:
 
 ```bash
-npm install @syncupsuite/themes   # v0.1.1 — security-audited, 83 tests, zero runtime deps
+npm install @syncupsuite/themes   # v0.2.2 — OKLCH color math, security-audited, zero runtime deps
 ```
 
 > **Package quality**: v0.1.1 has been through a comprehensive review — P0 CSS generation bugs fixed, P1 security hardening (CSS injection prevention), PERF_BUDGETS enforced, and 7 Architecture Decision Records (ADR-001 through ADR-007) governing all major design decisions. See `syncupsuite/themes/docs/adr/` for full detail.
