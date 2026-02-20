@@ -11,7 +11,7 @@ A Claude Code skill for generating culturally-grounded design token systems wher
 `@syncupsuite/themes` provides pre-built implementations of this pattern. If you want production-ready cultural themes without building from scratch, install the package:
 
 ```bash
-npm install @syncupsuite/themes   # v0.1.1 — security-audited, 195 tests, zero runtime deps
+npm install @syncupsuite/themes   # v0.1.1 — security-audited, 83 tests, zero runtime deps
 ```
 
 > **Package quality**: v0.1.1 has been through a comprehensive review — P0 CSS generation bugs fixed, P1 security hardening (CSS injection prevention), PERF_BUDGETS enforced, and 7 Architecture Decision Records (ADR-001 through ADR-007) governing all major design decisions. See `syncupsuite/themes/docs/adr/` for full detail.
@@ -113,26 +113,26 @@ See `references/theme-registry.md` for curated foundations.
 
 ### Layer 2: Color Expansion (System)
 
-Each seed color expands into a 9-step lightness scale using HSL manipulation.
+Each seed color expands into a 9-step OKLCH lightness scale.
 
-> **Roadmap note**: HSL is the current implementation. OKLCH migration is planned (ADR-001) before themes 3-10 are added — OKLCH produces perceptually uniform lightness scales across hues where HSL does not. Custom themes built now may require value recalculation after the OKLCH migration.
+> **Why OKLCH** (ADR-001): OKLCH produces perceptually uniform lightness — equal L steps produce equal perceived brightness changes across all hues. HSL does not have this property; blue and purple hues appear darker than yellow at the same HSL lightness value. All `@syncupsuite/themes` packages use OKLCH natively.
 
 **Lightness scale**:
 
-| Step | Lightness Adjustment | Usage Intent |
-|------|---------------------|--------------|
-| 50 | +40% L, -15% S | Backgrounds, subtle tints |
-| 100 | +33% L, -12% S | Hover backgrounds |
-| 200 | +25% L, -8% S | Borders, dividers |
-| 300 | +15% L, -5% S | Disabled states |
-| 400 | +7% L, -2% S | Secondary elements |
-| 500 | Base | Primary usage (seed value) |
-| 600 | -7% L, +2% S | Hover states |
-| 700 | -15% L, +5% S | Active states |
-| 800 | -25% L, +8% S | High-contrast text |
-| 900 | -35% L, +10% S | Maximum contrast |
+| Step | OKLCH L (approx) | Usage Intent |
+|------|------------------|--------------|
+| 50 | ~0.95 | Backgrounds, subtle tints |
+| 100 | ~0.90 | Hover backgrounds |
+| 200 | ~0.82 | Borders, dividers |
+| 300 | ~0.72 | Disabled states |
+| 400 | ~0.62 | Secondary elements |
+| 500 | Seed | Primary usage (seed value) |
+| 600 | ~0.44 | Hover states |
+| 700 | ~0.36 | Active states |
+| 800 | ~0.26 | High-contrast text |
+| 900 | ~0.16 | Maximum contrast |
 
-Lightness and saturation adjustments are clamped to valid ranges (L: 5-98%, S: 5-100%).
+L values are clamped to valid OKLCH range (0.05–0.98). Chroma is scaled proportionally to preserve hue character without over-saturating dark steps.
 
 **Harmony modes** control how additional palette colors are derived from seeds:
 

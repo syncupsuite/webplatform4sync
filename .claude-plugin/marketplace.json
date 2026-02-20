@@ -15,6 +15,13 @@
       "description": "Platform4Sync skill surface for multi-tenant SaaS on Cloudflare + Neon. Choose your frame: Construction (site → pour → frame → wire → finish) or Shu-Ha-Ri (shu → ha → ri). Same tools, different approaches.",
       "version": "0.4.0",
       "keywords": ["multi-tenant", "saas", "cloudflare-workers", "neon-postgres", "firebase", "design-tokens", "themes", "cultural-design", "construction-frame", "shu-ha-ri", "command-frames"]
+    },
+    {
+      "name": "@syncupsuite/themes",
+      "source": "npm:@syncupsuite/themes",
+      "description": "Pre-built culturally-grounded design token packs. Import directly into Tailwind v4 or TypeScript — no build step required. Includes Swiss International and Nihon Traditional. DTCG-aligned, WCAG AA validated, zero runtime dependencies.",
+      "version": "0.1.1",
+      "keywords": ["design-tokens", "themes", "tailwind-v4", "dtcg", "cultural-design", "swiss-international", "nihon-traditional", "css-custom-properties", "wcag"]
     }
   ]
 }
