@@ -1,3 +1,10 @@
+> **@deprecated** — Use a command frame instead.
+> Construction: `/webplatform4sync:wire` → `ci` or `deploy`, then `/webplatform4sync:finish` → `ship`
+> Shu-Ha-Ri: `/webplatform4sync:ri` → `flow` or `ship`
+> This command will be removed after one full project cycle with frames in use.
+
+---
+
 # wp4s7_deploy
 
 > Step 7 of 9 — Deploy to Cloudflare Workers

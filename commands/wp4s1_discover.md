@@ -1,3 +1,10 @@
+> **@deprecated** — Use a command frame instead.
+> Construction: `/webplatform4sync:site` → `init` or `scaffold`
+> Shu-Ha-Ri: `/webplatform4sync:shu` → `init` or `scaffold`
+> This command will be removed after one full project cycle with frames in use.
+
+---
+
 # wp4s1_discover
 
 > Step 1 of 9 — Scan project against the Platform4Sync standard

@@ -1,3 +1,10 @@
+> **@deprecated** — Use a command frame instead.
+> Construction: run any stage command with no subcommand to see status, or start fresh with `/webplatform4sync:site`
+> Shu-Ha-Ri: run `/webplatform4sync:shu` with no subcommand to see the mastery map
+> This command will be removed after one full project cycle with frames in use.
+
+---
+
 # wp4s9_status
 
 > Step 9 of 9 — Show adoption status and suggest next step

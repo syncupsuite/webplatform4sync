@@ -1,3 +1,10 @@
+> **@deprecated** — Use a command frame instead.
+> Construction: `/webplatform4sync:frame` → `auth`
+> Shu-Ha-Ri: `/webplatform4sync:ha` → `auth`
+> This command will be removed after one full project cycle with frames in use.
+
+---
+
 # wp4s5_auth
 
 > Step 5 of 9 — Configure graduated authentication

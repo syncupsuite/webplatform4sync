@@ -1,3 +1,10 @@
+> **@deprecated** — Use a command frame instead.
+> Construction: `/webplatform4sync:finish` → `a11y`, `sr`, or `watch`
+> Shu-Ha-Ri: `/webplatform4sync:ri` → `a11y`, `sr`, or `watch`
+> This command will be removed after one full project cycle with frames in use.
+
+---
+
 # wp4s8_validate
 
 > Step 8 of 9 — Validate tenant model, tokens, and contract alignment

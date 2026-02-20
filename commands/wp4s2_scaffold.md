@@ -1,3 +1,10 @@
+> **@deprecated** — Use a command frame instead.
+> Construction: `/webplatform4sync:site` → `scaffold`
+> Shu-Ha-Ri: `/webplatform4sync:shu` → `scaffold`
+> This command will be removed after one full project cycle with frames in use.
+
+---
+
 # wp4s2_scaffold
 
 > Step 2 of 9 — Generate project structure

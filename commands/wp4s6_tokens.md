@@ -1,3 +1,10 @@
+> **@deprecated** — Use a command frame instead.
+> Construction: `/webplatform4sync:finish` → `tokens` or `theme`
+> Shu-Ha-Ri: `/webplatform4sync:ha` → `tokens` or `theme`
+> This command will be removed after one full project cycle with frames in use.
+
+---
+
 # wp4s6_tokens
 
 > Step 6 of 9 — Set up culturally-grounded design token system

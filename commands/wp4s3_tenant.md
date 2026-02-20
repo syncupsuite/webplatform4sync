@@ -1,3 +1,10 @@
+> **@deprecated** — Use a command frame instead.
+> Construction: `/webplatform4sync:pour` → `platform`
+> Shu-Ha-Ri: `/webplatform4sync:ha` → `platform`
+> This command will be removed after one full project cycle with frames in use.
+
+---
+
 # wp4s3_tenant
 
 > Step 3 of 9 — Set up 3-tier tenant model

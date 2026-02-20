@@ -1,3 +1,10 @@
+> **@deprecated** — Use a command frame instead.
+> Construction: `/webplatform4sync:pour` → `neon`
+> Shu-Ha-Ri: `/webplatform4sync:ha` → `neon`
+> This command will be removed after one full project cycle with frames in use.
+
+---
+
 # wp4s4_database
 
 > Step 4 of 9 — Configure Neon database with tenant-scoped queries
