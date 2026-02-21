@@ -1,6 +1,6 @@
 {
   "name": "webplatform4sync",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Platform4Sync skill surface with command frames — same tools, different approaches",
   "frames": {
     "construction": {
@@ -16,6 +16,7 @@
   },
   "commands": {
     "framed": ["site", "pour", "frame", "wire", "finish", "shu", "ha", "ri"],
+    "standalone": ["diagnose-tokens"],
     "legacy": ["wp4s1_discover", "wp4s2_scaffold", "wp4s3_tenant", "wp4s4_database", "wp4s5_auth", "wp4s6_tokens", "wp4s7_deploy", "wp4s8_validate", "wp4s9_status"]
   }
 }
