@@ -1,6 +1,6 @@
 {
   "name": "webplatform4sync",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Platform4Sync skill surface with command frames — same tools, different approaches",
   "frames": {
     "construction": {

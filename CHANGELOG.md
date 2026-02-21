@@ -4,6 +4,19 @@ All notable changes to Platform4Sync will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.4.2] - 2026-02-21
+
+### Added
+
+- **Theme contribution guide** (`skills/theme-inspired-tokens/references/contributing.md`) — step-by-step guide for creating and submitting culturally-grounded themes to `@syncupsuite/themes`:
+  - Research requirements: what counts as verifiable provenance, primary source expectations
+  - Seed color selection principles: near-black/white endpoints, accent requirements, tonal spread
+  - Foundation JSON specification: all metadata fields, harmony modes, radius tendencies, typography categories
+  - Pipeline walkthrough: single-file operation, `pnpm generate`, validation loop
+  - Review criteria: provenance quality, cultural authenticity, contrast compliance, narrative coherence
+  - Worked example: Nordic Modern theme from research through PR submission
+- Added `references/contributing.md` to skill's Related References section
+
 ## [0.4.1] - 2026-02-21
 
 ### Token Integration Reliability

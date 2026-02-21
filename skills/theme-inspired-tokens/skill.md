@@ -553,6 +553,7 @@ Before tokens are accepted, the following checks MUST pass:
 
 ## Related References
 
+- `references/contributing.md` -- Step-by-step guide for creating and submitting a new theme
 - `references/token-schema.md` -- Full DTCG-aligned schema specification
 - `references/theme-registry.md` -- Curated cultural foundations
 - `references/typography-mapping.md` -- Hue-to-font mapping guide
