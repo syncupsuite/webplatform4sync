@@ -38,7 +38,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Changed
 
 - **Plugin metadata** bumped to v0.5.0 in `plugin.json` and `marketplace.json`.
-- **Scrubbed sync** from `hn-platform4sync` — all scaffold, skill, shared, and doc changes propagated to public marketplace.
+- **Full sync** — all scaffold, skill, shared, and doc changes propagated to public marketplace.
 
 ## [0.4.2] - 2026-02-21
 
