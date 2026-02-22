@@ -35,7 +35,7 @@ If no subcommand, present this menu and ask which to run.
 | `envrc` | Create or update `.envrc` with standardized environment config (auto-detects stack) |
 | `tune` | Analyze and optimize Claude Code configuration for this project's stack |
 | `clean` | Find and safely remove space-wasting artifacts from repos |
-| `scaffold` | Scaffold a new project — greenfield (new), brownfield (existing), or overlay (tokens only) |
+| `scaffold` | Adopt the platform structure — greenfield (new), brownfield (existing), or overlay (tokens only) |
 
 **Recommended order**: `scaffold` or `init` first, then `envrc`, then `tune`.
 
@@ -56,17 +56,17 @@ If no subcommand, present this menu and ask which to run.
 ## How to run a Shu command
 
 Do not ask for customizations at the Shu stage. The purpose of Shu is to
-establish the standard pattern first, then diverge in Ha with understanding.
+adopt the proven pattern first, then diverge in Ha with understanding.
 
 If the user requests customization during a Shu command:
 
 > *"That customization makes sense — note it down and we will apply it when
-> we reach Ha on this concern. For now, let the standard scaffold establish
-> the baseline so you have something concrete to deviate from."*
+> we reach Ha on this concern. For now, adopt the platform standard to
+> establish the baseline so you have something concrete to deviate from."*
 
 If the user resists and insists on customizing now, proceed — but name it:
 
-> *"We are jumping to Ha on [concern] before the standard is established.
+> *"We are jumping to Ha on [concern] before the standard is adopted.
 > That is a valid choice if you already know why the standard does not fit.
 > Let us document the reason so the deviation is intentional, not accidental."*
 

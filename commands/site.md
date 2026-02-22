@@ -31,7 +31,7 @@ If no subcommand, present this menu and ask which to run.
 | `envrc` | Create or update `.envrc` with standardized environment config (auto-detects stack) |
 | `tune` | Analyze and optimize Claude Code configuration for this project's stack |
 | `clear` | Find and safely remove space-wasting artifacts from repos |
-| `scaffold` | Scaffold a new project — greenfield (new), brownfield (existing), or overlay (tokens only) |
+| `scaffold` | Initialize your project to the platform structure — greenfield (new), brownfield (existing), or overlay (tokens only) |
 
 ---
 

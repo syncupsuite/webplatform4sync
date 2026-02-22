@@ -5,7 +5,7 @@
 
 ---
 
-# wp4s6_tokens
+# wp4s6_tokens (DEPRECATED)
 
 > Step 6 of 9 — Set up culturally-grounded design token system
 > Previous: `wp4s5_auth` | Next: `wp4s7_deploy`

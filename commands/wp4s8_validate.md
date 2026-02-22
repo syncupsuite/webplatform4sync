@@ -5,7 +5,7 @@
 
 ---
 
-# wp4s8_validate
+# wp4s8_validate (DEPRECATED)
 
 > Step 8 of 9 — Validate tenant model, tokens, and contract alignment
 > Previous: `wp4s7_deploy` | Next: `wp4s9_status`

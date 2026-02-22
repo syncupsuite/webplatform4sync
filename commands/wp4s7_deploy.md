@@ -5,7 +5,7 @@
 
 ---
 
-# wp4s7_deploy
+# wp4s7_deploy (DEPRECATED)
 
 > Step 7 of 9 — Deploy to Cloudflare Workers
 > Previous: `wp4s6_tokens` | Next: `wp4s8_validate`

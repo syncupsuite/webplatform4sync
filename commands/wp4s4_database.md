@@ -5,7 +5,7 @@
 
 ---
 
-# wp4s4_database
+# wp4s4_database (DEPRECATED)
 
 > Step 4 of 9 — Configure Neon database with tenant-scoped queries
 > Previous: `wp4s3_tenant` | Next: `wp4s5_auth`

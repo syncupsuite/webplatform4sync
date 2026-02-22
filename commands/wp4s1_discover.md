@@ -5,7 +5,7 @@
 
 ---
 
-# wp4s1_discover
+# wp4s1_discover (DEPRECATED)
 
 > Step 1 of 9 — Scan project against the Platform4Sync standard
 > Previous: none | Next: `wp4s2_scaffold`

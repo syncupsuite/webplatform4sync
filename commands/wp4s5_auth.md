@@ -5,7 +5,7 @@
 
 ---
 
-# wp4s5_auth
+# wp4s5_auth (DEPRECATED)
 
 > Step 5 of 9 — Configure graduated authentication
 > Previous: `wp4s4_database` | Next: `wp4s6_tokens`

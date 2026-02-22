@@ -48,7 +48,7 @@ If no subcommand, present this menu grouped by concern.
 | Subcommand | What it does |
 |-----------|-------------|
 | `tokens` | Culturally-grounded design token system — DTCG JSON + Tailwind 4 output + React artifact |
-| `theme` | Full theme: token system + identity picker (10 curated designs) + live preview |
+| `theme` | Full theme: identity picker (12 curated identities) + live preview |
 | `ui` | Web components and pages requiring distinctive visual design |
 
 ### Accessibility
@@ -99,10 +99,12 @@ If no subcommand, present this menu grouped by concern.
 ## Key decisions at this stage
 
 **Design identity selection**
-> *"Ten curated identities are available — Swiss International, Nihon Traditional,
-> Nordic Modern, and seven others. Admin picks one; it propagates to all tenant
-> instances. This is the Mac wallpaper model: you commit to an identity, not
-> to arbitrary tokens. Run `finish:theme` to preview before committing."*
+> *"Twelve curated identities are available — Swiss International, Nihon
+> Traditional, Nordic Modern, Tang Imperial, Shuimo Modern, Nihon Minimal,
+> Renaissance, Art Deco, Wiener Werkstaette, Milanese Design, De Stijl,
+> and Swiss Modernist. Admin picks one; it propagates to all tenant instances.
+> This is the Mac wallpaper model: you integrate your chosen identity, not
+> arbitrary tokens. Run `finish:theme` to preview before committing."*
 
 **Accessibility scope**
 > *"WCAG 2.2 Level AA is the minimum. Level AAA for public-facing forms.

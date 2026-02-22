@@ -5,7 +5,7 @@
 
 ---
 
-# wp4s3_tenant
+# wp4s3_tenant (DEPRECATED)
 
 > Step 3 of 9 — Set up 3-tier tenant model
 > Previous: `wp4s2_scaffold` | Next: `wp4s4_database`

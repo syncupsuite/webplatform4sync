@@ -5,7 +5,7 @@
 
 ---
 
-# wp4s9_status
+# wp4s9_status (DEPRECATED)
 
 > Step 9 of 9 — Show adoption status and suggest next step
 > Previous: `wp4s8_validate` | Next: none (workflow complete)

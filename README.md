@@ -1,13 +1,15 @@
 # Platform4Sync
 
-Platform standards, skills, and scaffold templates for building multi-tenant SaaS applications on Cloudflare Workers + Neon PostgreSQL.
-
-## Install as Claude Code Marketplace
-
-Add to your project's `.claude/settings.json`:
+Production multi-tenant infrastructure for Claude Code. Greenfield or brownfield.
 
 ```json
 {
+  "permissions": {
+    "allow": ["WebFetch"],
+    "deny": []
+  },
+  "mcpServers": {},
+  "customInstructions": "",
   "extraKnownMarketplaces": {
     "webplatform4sync": {
       "source": {
@@ -19,37 +21,13 @@ Add to your project's `.claude/settings.json`:
 }
 ```
 
-## What's Inside
+- **12 cultural identities** — Swiss International, Nihon Traditional, Nordic Modern, Tang Imperial, Shuimo Modern, Nihon Minimal, Renaissance, Art Deco, Wiener Werkstaette, Milanese Design, De Stijl, Swiss Modernist
+- **Multi-tenant isolation** — 3-tier architecture (Platform / Partner / Customer) with RLS, Neon PostgreSQL, and Drizzle ORM
+- **Graduated auth** — Anonymous to Preview to OAuth to Full Account, with Better Auth sessions and Firebase identity
 
-- **Skills** — Claude Code skills for multi-tenant architecture, graduated auth, Neon isolation, and design tokens
-- **Scaffolds** — Project templates for greenfield, brownfield, and overlay adoption
-- **Contracts** — Shared type definitions ensuring cross-skill compatibility
-- **Validators** — Token and tenant configuration validators
+[Documentation](https://docs.syncupsuite.com)
 
-## Documentation
-
-- [What is Platform4Sync?](docs/what-is-platform4sync.md) — Overview and technical architecture
-- [Architecture Rationale](docs/rationale.md) — Design decisions and review history
-- [Contributing](docs/contributing.md) — How to add skills and templates
-
-## Skills
-
-Each skill has a `skill.md` entry point. Point Claude Code at the skill directory and describe your task:
-
-| Skill | Purpose |
-|-------|---------|
-| `skills/multi-tenant-platform/` | 3-tier tenant architecture (Platform/Partner/Customer) |
-| `skills/graduated-auth/` | Anonymous → Preview → OAuth → Full Account |
-| `skills/neon-multi-tenant/` | Neon branches, Hyperdrive, Drizzle ORM |
-| `skills/theme-inspired-tokens/` | Culturally-grounded design tokens (W3C DTCG) |
-
-## Scaffolds
-
-| Template | When to Use |
-|----------|-------------|
-| `scaffold/greenfield/` | New project from scratch |
-| `scaffold/brownfield/` | Migrating existing project to standards |
-| `scaffold/overlay/` | Adding design token system only |
+Not a template. The same patterns shipping in brandsyncup.com and legalsyncup.com.
 
 ## License
 

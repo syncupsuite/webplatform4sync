@@ -4,6 +4,18 @@ All notable changes to Platform4Sync will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.5.1] - 2026-02-22
+
+### Voice Alignment (convoy-032)
+
+- **gt-va002: Command voice rewrite** — applied voice guidelines across all command files:
+  - `ha.md`: Reframed cultural tokens as the baseline (Shu level), not a Ha deviation. Ha is choosing which culture and whether to deviate from a pre-built identity. Updated from 10 to 12 curated identities with full list. Added `ha:domain` section for T1 partner domain routing decisions.
+  - `finish.md`: Updated from 10 to 12 curated identities with full list. Reframed to "integrate your chosen identity" instead of "build a token system."
+  - `shu.md`: Replaced "scaffold a new project" with "adopt the platform structure." Reframed language around adoption of proven patterns rather than creation.
+  - `site.md`: Replaced "scaffold a new project" with "initialize your project to the platform structure."
+- **gt-va004: README gateway rewrite** — replaced essay-style README with gateway format: one-line description, install block, three bullet points (12 identities, multi-tenant isolation, graduated auth), docs link, and anti-positioning line.
+- **gt-va004: Legacy deprecation cleanup** — added `(DEPRECATED)` to title of all 9 legacy `wp4s*` commands. Forwarding notices to frame equivalents already present and verified correct.
+
 ## [0.5.0] - 2026-02-22
 
 ### Security Hardening

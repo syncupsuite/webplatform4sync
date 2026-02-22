@@ -55,7 +55,7 @@ If no subcommand, present this menu grouped by concern.
 | Subcommand | What it does |
 |-----------|-------------|
 | `tokens` | Culturally-grounded design token system — every color, font, and spacing has a source |
-| `theme` | Full theme: token system + identity picker (10 curated designs) + live preview |
+| `theme` | Full theme: identity picker (12 curated identities) + live preview |
 
 ---
 
@@ -106,16 +106,27 @@ happen implicitly inside a tool invocation.
 > permanently. Name your spectrum before building the scaffold."*
 
 `ha:tokens`
-> *"The token system traces every design decision to a cultural or aesthetic source.
-> 'This blue is Hanada blue from Japanese indigo dyeing' — not 'I liked this hex.'
-> What is the cultural frame for this product? That question is the starting point,
-> not the color picker."*
+> *"Cultural tokens are the baseline — every identity in the system traces its
+> colors, typography, and spacing to a documented cultural source. That is Shu.
+> The Ha decision is which culture to adopt, and whether to deviate from one
+> of the 12 pre-built identities. You are not choosing whether to use cultural
+> theming. You are choosing which cultural foundation fits your product."*
 
 `ha:theme`
-> *"Ten curated identities are available. You pick one; it propagates everywhere.
+> *"Twelve curated identities are available: Swiss International, Nihon
+> Traditional, Nordic Modern, Tang Imperial, Shuimo Modern, Nihon Minimal,
+> Renaissance, Art Deco, Wiener Werkstaette, Milanese Design, De Stijl,
+> and Swiss Modernist. You pick one; it propagates everywhere.
 > This is the Mac wallpaper model — not a color scheme, an identity. Swiss
 > International carries precision and neutrality. Nihon Traditional carries
 > restraint and depth. Which one fits the product's voice?"*
+
+`ha:domain`
+> *"Does each T1 partner resolve to one domain or many? Primary, alias, vanity —
+> this is a Ha decision. The standard model assumes one canonical domain per
+> partner. If your partners need vanity domains or locale-specific subdomains,
+> name the routing model before implementing. Domain mapping shapes tenant
+> resolution and SSL provisioning."*
 
 ---
 

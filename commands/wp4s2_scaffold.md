@@ -5,7 +5,7 @@
 
 ---
 
-# wp4s2_scaffold
+# wp4s2_scaffold (DEPRECATED)
 
 > Step 2 of 9 — Generate project structure
 > Previous: `wp4s1_discover` | Next: `wp4s3_tenant`
