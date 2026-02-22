@@ -4,6 +4,12 @@ All notable changes to Platform4Sync will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.5.2] - 2026-02-22
+
+### Removed
+
+- **Legacy commands deleted** — removed `wp4s1_discover` through `wp4s9_status` (9 files). These were deprecated in v0.4.0 with forwarding notices to the Construction and Shu-Ha-Ri frames. One full project cycle has passed; the forwarding period is over. Use `/webplatform4sync:site` (Construction) or `/webplatform4sync:shu` (Shu-Ha-Ri) instead.
+
 ## [0.5.1] - 2026-02-22
 
 ### Voice Alignment (convoy-032)
