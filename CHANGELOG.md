@@ -40,6 +40,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - **Plugin metadata** bumped to v0.5.0 in `plugin.json` and `marketplace.json`.
 - **Full sync** — all scaffold, skill, shared, and doc changes propagated to public marketplace.
 
+### Fixed
+
+- **`plugin.json` schema** — replaced invalid nested `frames` and `commands` objects with standard path-based fields (`"commands": "./commands/"`, `"skills": "./skills/"`).
+- **`marketplace.json` schema** — removed `@syncupsuite/themes` plugin entry that used invalid `"npm:package-name"` source format. Themes is an npm package, not a Claude Code plugin.
+- **`diagnose-tokens` command** — created missing `commands/diagnose-tokens.md` (listed in plugin.json since v0.4.1 but file never existed).
+
 ## [0.4.2] - 2026-02-21
 
 ### Added
