@@ -162,7 +162,7 @@ await db.insert(documents).values({ title: 'New Doc' }); // tenant_id injected
 
 ## Hyperdrive Connection Pooling
 
-Cloudflare Hyperdrive provides connection pooling at the edge, eliminating cold-start connection overhead for Neon. This is critical for Workers because:
+Cloudflare Hyperdrive provides connection pooling at the edge, reducing cold-start connection overhead for Neon. This matters for Workers because:
 
 - Each Worker invocation would otherwise create a new TCP + TLS connection to Neon.
 - Neon's serverless driver uses WebSocket, but Hyperdrive uses persistent TCP connections from Cloudflare's network.
@@ -175,6 +175,8 @@ Cloudflare Hyperdrive provides connection pooling at the edge, eliminating cold-
 | Connection setup | 50-150ms (TLS + auth) | ~0ms (pooled) |
 | First query latency | 80-200ms | 10-30ms |
 | Sustained query latency | 20-50ms | 10-30ms |
+
+**Cost note**: Neon's free tier supports this branch-based isolation model for development and early production. As tenant count grows, costs scale through connection pooling (Hyperdrive) and storage, not through per-tenant database provisioning. Adding a T2 tenant is a row in the database and an RLS policy, not a new Neon branch.
 
 See `templates/hyperdrive-setup.md` for configuration details.
 

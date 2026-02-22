@@ -14,7 +14,7 @@ A Claude Code skill for generating culturally-grounded design token systems wher
 npm install @syncupsuite/themes   # v0.4.0 — OKLCH color math, security-audited, zero runtime deps
 ```
 
-> **Package quality**: v0.4.0 has been through comprehensive review — P0 CSS generation bugs fixed, P1 security hardening (CSS injection prevention), PERF_BUDGETS enforced, Semantic Color API with Tailwind v4 `@theme` integration, WCAG contrast validation across all 12 themes, and 7 Architecture Decision Records (ADR-001 through ADR-007) governing all major design decisions. See `syncupsuite/themes/docs/adr/` for full detail.
+> **Package quality**: v0.4.0 has been through security review and hardening — P0 CSS generation bugs fixed, CSS injection prevention, PERF_BUDGETS enforced, Semantic Color API with Tailwind v4 `@theme` integration, WCAG contrast validation across all 12 themes, and 7 Architecture Decision Records (ADR-001 through ADR-007) governing all major design decisions. See `syncupsuite/themes/docs/adr/` for full detail.
 
 **CSS usage** -- import directly into your stylesheet:
 
@@ -41,7 +41,7 @@ import { buildTokens } from '@syncupsuite/transformers';
 
 Available pre-built themes (12): `swiss-international`, `nihon-traditional`, `nordic-modern`, `tang-imperial`, `shuimo-modern`, `nihon-minimal`, `renaissance`, `art-deco`, `wiener-werkstaette`, `milanese-design`, `de-stijl`, `swiss-modernist`. All themes validated against 20 WCAG AA contrast pairs.
 
-> **Skill vs. Package**: The package ships curated implementations. This skill teaches you to build your own -- custom cultural tokens from any tradition, following the same four-layer pattern. Use the package for speed; use this skill when you need a theme that doesn't exist yet.
+> **When to use the skill**: The package is the standard path -- install it and import a theme. This skill exists for when none of the 12 curated themes fit your project. It teaches you to build a custom foundation using the same four-layer cultural model that the package implements, so your custom theme is structurally identical to the shipped ones.
 
 ---
 
@@ -270,7 +270,7 @@ radius.full  -- 9999px
 
 Radius selection is influenced by the cultural foundation:
 - Japanese/Swiss traditions favor sharper radii (none to sm)
-- Nordic/Italian traditions favor softer radii (md to lg)
+- Nordic/Renaissance traditions favor softer radii (md to lg)
 - These are defaults, not constraints
 
 ---
@@ -378,6 +378,8 @@ focus.ring              -- Must meet WCAG 2.1 focus indicator requirements
 accessibility.*         -- High contrast, reduced motion, forced colors
 ```
 
+**Why these are protected**: Status colors and focus indicators are accessibility requirements, not brand choices. If a T1 partner overrides `status.error` to match their brand palette, colorblind users lose the ability to distinguish errors from success states. Focus rings that fail WCAG 2.1 Section 2.4.7 make the application unusable for keyboard-only users. These tokens exist to maintain compliance and platform stability across all tenants.
+
 Protected tokens are enforced by the validation layer. Any token file that attempts to redefine a protected path will fail validation with an explicit error.
 
 ---
@@ -417,13 +419,19 @@ Before tokens are accepted, the following checks MUST pass:
 
 1. **Schema validation**: All tokens have `$type`, `$value`, `$description`
 2. **Semantic completeness**: Every required semantic token is mapped
-3. **Accessibility (WCAG AA)**: `text.primary` on `background.canvas` >= 4.5:1 contrast ratio *(schema-validated at build time; automated contrast computation planned — see ADR-005)*
-4. **Accessibility (WCAG AA)**: `text.secondary` on `background.canvas` >= 4.5:1 contrast ratio *(see ADR-005)*
-5. **Accessibility (WCAG AA)**: `interactive.primary` on `background.canvas` >= 3:1 contrast ratio *(see ADR-005)*
+3. **Accessibility (WCAG AA)**: `text.primary` on `background.canvas` >= 4.5:1 contrast ratio *(validated at build time across all 12 themes — see ADR-005)*
+4. **Accessibility (WCAG AA)**: `text.secondary` on `background.canvas` >= 4.5:1 contrast ratio *(validated at build time — see ADR-005)*
+5. **Accessibility (WCAG AA)**: `interactive.primary` on `background.canvas` >= 3:1 contrast ratio *(validated at build time — see ADR-005)*
 6. **Dark mode parity**: Every light semantic token has a dark counterpart
 7. **Cultural provenance**: Every seed color has a non-empty `provenance` object
 8. **Protected tokens**: No T1/T2 override of protected paths
 9. **Performance**: Generated CSS is within budget
+
+---
+
+## Reporting Issues
+
+If token output doesn't match expectations -- colors differ from the swatch preview, CSS conflicts with existing styles, dark mode doesn't toggle -- use the `feedback` command to capture the issue for the platform team.
 
 ---
 

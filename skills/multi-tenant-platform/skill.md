@@ -51,9 +51,9 @@ These rules apply to every project that uses this skill, regardless of complexit
 
 2. **Defense-in-depth isolation.** Never rely on a single layer. Combine: application-level filtering + PostgreSQL RLS + connection-level context (`SET app.tenant_id`). If one layer fails, the others catch it.
 
-3. **Semantic tokens only.** UI components never reference raw colors or hardcoded values. All theming goes through semantic design tokens (`--color-surface-primary`, not `--blue-500`).
+3. **Semantic tokens only.** UI components should not reference raw colors or hardcoded values. All theming goes through semantic design tokens (`--color-surface-primary`, not `--blue-500`).
 
-4. **Protected tokens.** Certain tokens (accessibility contrast ratios, minimum font sizes, spacing rhythm) are platform-controlled and cannot be overridden by T1 or T2 themes.
+4. **Protected tokens.** Certain tokens (accessibility contrast ratios, minimum font sizes, spacing rhythm) are platform-controlled and cannot be overridden by T1 or T2 themes. This exists for compliance and accessibility: status colors must remain distinguishable for colorblind users, focus indicators must meet WCAG 2.1 requirements, and spacing rhythm must preserve readability. Without protection, a single tenant's brand override could break accessibility for their entire user base.
 
 5. **WCAG AA minimum.** All tenant themes must pass WCAG AA contrast checks. The platform enforces this at token generation time, not at runtime.
 
@@ -206,6 +206,81 @@ All projects using this skill target:
 | Auth | Better Auth |
 | Secrets | Doppler |
 | Design Tokens | Style Dictionary (or custom pipeline) |
+
+---
+
+## Why This Structure
+
+The 3-tier model maps to a specific cost structure. Understanding this helps with capacity planning.
+
+- **Shared Neon database**: One database project with branch isolation for dev/preview environments. You pay for one database, not one per tenant. Neon branches are copy-on-write, so storage is shared for unchanged data.
+- **Hyperdrive connection pooling**: One Hyperdrive configuration serves all tenants at the edge. Workers reuse pooled TCP connections instead of opening new ones per request. This avoids per-tenant connection overhead.
+- **Single Worker deployment**: One codebase deployed to Cloudflare Workers. Tenant identity is resolved at request time from the hostname or session. There is no per-tenant deployment step.
+- **Token CSS via CDN**: Theme CSS files are static assets served from the edge cache. Switching tenants swaps a CSS import, not a server-side render.
+
+The result: infrastructure costs stay roughly flat as tenant count grows. Adding a new T2 tenant is a database row and a DNS record, not a new deployment. The cost scales with traffic and storage, not with tenant count.
+
+---
+
+## Multi-Domain Tenant Resolution
+
+When tenants operate under their own domains (white-label), the platform resolves tenant identity from the incoming request hostname.
+
+### Domain Mappings
+
+Each tenant can have multiple domains with different roles:
+
+```typescript
+// Domain type enum
+type DomainType = 'primary' | 'alias' | 'vanity';
+
+// Domain mapping record
+interface DomainMapping {
+  domain: string;        // e.g., "app.clientbrand.com"
+  tenant_id: string;     // Resolved tenant
+  domain_type: DomainType;
+  verified: boolean;     // DNS ownership confirmed
+  ssl_status: string;    // Certificate provisioning state
+}
+```
+
+| Type | Purpose | Example |
+|------|---------|---------|
+| `primary` | The canonical domain for the tenant | `app.clientbrand.com` |
+| `alias` | Alternative domains that resolve to the same tenant | `clientbrand.example.com` |
+| `vanity` | Short or branded URLs for specific features | `go.clientbrand.com` |
+
+### Tenant Resolution Middleware
+
+On every incoming request, the Worker resolves the tenant before any application logic runs:
+
+1. Extract hostname from the request
+2. Look up `domain_mappings` for a matching, verified domain
+3. If found, set `tenant_id` in the request context
+4. If not found, fall back to the platform's default domain handling (show landing page or 404)
+
+```typescript
+// Simplified resolution flow
+async function resolveTenant(request: Request, db: DrizzleClient): Promise<string | null> {
+  const hostname = new URL(request.url).hostname;
+  const mapping = await db.select()
+    .from(domainMappings)
+    .where(and(
+      eq(domainMappings.domain, hostname),
+      eq(domainMappings.verified, true)
+    ))
+    .limit(1);
+  return mapping[0]?.tenant_id ?? null;
+}
+```
+
+Domain verification uses a DNS TXT record: the tenant adds a `_syncup-verify.domain.com` TXT record containing a platform-issued token. The platform checks this before marking the domain as verified.
+
+---
+
+## Reporting Issues
+
+If RLS policies don't apply as expected or tenant isolation fails during testing, use the `feedback` command to capture the issue for the platform team.
 
 ---
 
