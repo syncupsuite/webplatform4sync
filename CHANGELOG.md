@@ -4,6 +4,42 @@ All notable changes to Platform4Sync will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.5.0] - 2026-02-22
+
+### Security Hardening
+
+- **RLS tenant isolation fix** — replaced broken `setTenantContext()` with transactional `tenantQuery()` wrapper. Neon HTTP driver executes each query as a separate HTTP request, so `set_config()` must be in the same Drizzle transaction as the data queries.
+- **Auth graduation account takeover fix** — `graduateFromOAuth` now checks provider linkage before merging accounts, preventing email-based account takeover.
+- **`verifyBetterAuthSession` implementation** — replaced stub with working session verification.
+- **CORS hardening** — omit CORS headers entirely for disallowed origins; localhost only allowed when `ENVIRONMENT === "development"`.
+- **Security headers** — added `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, and `Content-Security-Policy` to all responses.
+- **Rate limiting** — KV-based rate limiting on `/api/auth/` endpoints (20 req/min per IP).
+- **CSRF protection** — Origin-check middleware for custom API routes.
+- **Session fixation prevention** — `onSessionCreated` callback in graduation bridge for post-creation session regeneration.
+
+### Schema & Data Model
+
+- **Schema split** — separated `platformSchema` (tenant infrastructure: tenants, domain_mappings, tenant_relationships) from `appSchema` (application tables). Platform tables live in the `platform` schema, app tables in `{{SCHEMA_NAME}}`.
+- **Domain verification** — changed `verified: boolean` to `verifiedAt: timestamp` on `domain_mappings` for audit trail.
+- **Runtime validation** — `rowToTenantContext` now validates tier, status, and isolation_mode values at runtime with descriptive errors.
+- **Slug format validation** — DNS-safe slug regex check before database lookup.
+
+### Quality Improvements
+
+- **Named constants** — session durations extracted to `shared/contracts/constants.ts` (SESSION_TTL_SECONDS, SESSION_REFRESH_SECONDS, PREVIEW_SESSION_TTL_SECONDS), replacing inline magic numbers across auth, graduation, and middleware files.
+- **PostHog SSR guard** — `posthog.ts` now returns early when `typeof window === "undefined"`, preventing server-side crashes.
+- **Dark mode alignment** — scaffold CSS uses `[data-theme="dark"]` selector matching the contracts' default `'class'` strategy.
+- **Request ID** — `X-Request-ID` header on every response via `crypto.randomUUID()` for log correlation.
+- **`--token-` prefix removed** — eliminated phantom two-layer CSS variable convention from 4 docs. Scaffold correctly uses single-layer `--color-*` vars with Tailwind v4.
+- **Drizzle config** — added `"platform"` to `schemaFilter` array.
+- **tsconfig cleanup** — removed dead `declaration` and `declarationMap` options (no-ops under `noEmit`).
+- **Documentation fixes** — corrected stale TypeScript/Tailwind versions in architecture docs, fixed `isolation-modes.md` argument count, added missing scaffold placeholder docs, added `shared/contracts/` to CLAUDE.md repo structure.
+
+### Changed
+
+- **Plugin metadata** bumped to v0.5.0 in `plugin.json` and `marketplace.json`.
+- **Scrubbed sync** from `hn-platform4sync` — all scaffold, skill, shared, and doc changes propagated to public marketplace.
+
 ## [0.4.2] - 2026-02-21
 
 ### Added
