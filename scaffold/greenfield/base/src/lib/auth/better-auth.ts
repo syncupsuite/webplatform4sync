@@ -1,7 +1,10 @@
 import { betterAuth } from "better-auth";
-import { neon } from "@neondatabase/serverless";
 
 import type { Env } from "@/server/index";
+
+// Session duration — mirrors shared/contracts/constants.ts (keep in sync)
+const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60;      // 7 days
+const SESSION_REFRESH_SECONDS = 24 * 60 * 60;       // 1 day
 
 // ---------------------------------------------------------------------------
 // Better Auth - server configuration
@@ -15,8 +18,6 @@ import type { Env } from "@/server/index";
  * share a single identity layer.
  */
 export function auth(env: Env) {
-  const sql = neon(env.NEON_DATABASE_URL);
-
   return betterAuth({
     database: {
       type: "postgres",
@@ -29,8 +30,8 @@ export function auth(env: Env) {
 
     // ---- Session ----
     session: {
-      expiresIn: 60 * 60 * 24 * 7, // 7 days
-      updateAge: 60 * 60 * 24,       // refresh daily
+      expiresIn: SESSION_TTL_SECONDS,
+      updateAge: SESSION_REFRESH_SECONDS,
     },
 
     // ---- OAuth providers ----
@@ -61,7 +62,7 @@ export function auth(env: Env) {
     // ---- Advanced ----
     trustedOrigins: [
       env.APP_URL,
-      "http://localhost:8080",
+      ...(env.ENVIRONMENT === "development" ? ["http://localhost:8080"] : []),
     ],
   });
 }

@@ -32,7 +32,7 @@ export const AUTH_LEVEL_ORDER: Record<AuthLevel, number> = {
   [AuthLevel.PREVIEW]: 1,
   [AuthLevel.OAUTH]: 2,
   [AuthLevel.FULL]: 3,
-} as const;
+};
 
 // ---------------------------------------------------------------------------
 // Auth State Types (discriminated union)

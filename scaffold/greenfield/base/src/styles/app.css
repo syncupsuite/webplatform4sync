@@ -3,12 +3,18 @@
 
 /* ========================================================================
    Tailwind 4 Theme Integration
-   Map design token custom properties into the Tailwind theme so that
-   utility classes like `bg-primary` and `text-muted` resolve to tokens.
+
+   The @theme block registers CSS custom properties as Tailwind theme values,
+   enabling utility classes like `bg-primary`, `text-muted`, etc.
+
+   These lines are NOT circular references — `var(--color-primary)` resolves
+   to the `:root` value defined in core.css, while `@theme { --color-primary }`
+   registers it as a Tailwind theme token. This is the standard Tailwind v4
+   CSS-first configuration pattern.
    ======================================================================== */
 
 @theme {
-  /* Colors */
+  /* Colors — resolved from core.css :root values */
   --color-primary: var(--color-primary);
   --color-primary-hover: var(--color-primary-hover);
   --color-primary-light: var(--color-primary-light);
@@ -19,6 +25,7 @@
   --color-background-subtle: var(--color-background-subtle);
   --color-surface: var(--color-surface);
   --color-surface-raised: var(--color-surface-raised);
+  /* Alias: core.css --color-text → Tailwind text-text-primary utility */
   --color-text-primary: var(--color-text);
   --color-text-secondary: var(--color-text-secondary);
   --color-text-muted: var(--color-text-muted);

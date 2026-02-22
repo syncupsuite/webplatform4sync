@@ -34,7 +34,7 @@ CREATE POLICY tenant_isolation ON documents
 The application sets `app.tenant_id` at the start of every transaction:
 
 ```sql
-SELECT platform.set_tenant_context('tenant-uuid-here', 2);
+SELECT platform.set_tenant_context('tenant-uuid-here');
 ```
 
 ### Pros

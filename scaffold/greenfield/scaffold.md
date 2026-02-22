@@ -1,7 +1,7 @@
 # Greenfield Scaffold
 
 > SyncUpSuite standard project scaffold for new applications.
-> Stack: React 19 + TypeScript 5.7 + Tailwind 4 + Vite 7 + Cloudflare Workers + Neon PostgreSQL + Drizzle ORM + Better Auth
+> Stack: React 19 + TypeScript 5.9 + Tailwind 4 + Vite 7 + Cloudflare Workers + Neon PostgreSQL + Drizzle ORM + Better Auth
 
 ---
 
@@ -128,6 +128,9 @@ The following placeholders are replaced during scaffolding:
 | `{{NEON_REGION}}` | Question 3 | `europe-west6` or `us-east-2` |
 | `{{CF_ACCOUNT_ID}}` | Cloudflare auth | `your-cloudflare-account-id` |
 | `{{NEON_PROJECT_ID}}` | Neon project | `your-neon-project-id` |
+| `{{KV_NAMESPACE_ID}}` | Cloudflare KV | `your-kv-namespace-id` |
+| `{{KV_NAMESPACE_PREVIEW_ID}}` | Cloudflare KV (preview) | `your-kv-preview-id` |
+| `{{HYPERDRIVE_ID}}` | Cloudflare Hyperdrive | `your-hyperdrive-config-id` |
 
 ---
 

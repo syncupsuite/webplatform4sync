@@ -29,7 +29,8 @@ Add the design token system to an existing project without changing infrastructu
 ### 1. Copy Token Files
 
 ```bash
-cp scaffold/overlay/templates/core-tokens.css src/styles/tokens/core.css
+# Create your core tokens file (see skills/theme-inspired-tokens for structure)
+touch src/styles/tokens/core.css
 cp scaffold/overlay/templates/style-dictionary.config.cjs ./  # optional
 ```
 
@@ -45,8 +46,8 @@ cp scaffold/overlay/templates/style-dictionary.config.cjs ./  # optional
 **Tailwind v4:**
 ```css
 @theme {
-  --color-primary: var(--token-color-primary);
-  /* ... map all tokens */
+  --color-primary: var(--color-primary);
+  /* ... map all tokens from core.css */
 }
 ```
 
@@ -57,7 +58,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: 'var(--token-color-primary)',
+        primary: 'var(--color-primary)',
       }
     }
   }

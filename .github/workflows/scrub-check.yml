@@ -33,11 +33,12 @@ jobs:
             "habitusnet"                    # Internal org name
             "HabitusNet"                    # Internal org name
             "for-syncup\.md"               # Internal-only file reference
+            "musia@habitusnet"             # Internal user email
           )
 
           FOUND=0
           for PATTERN in "${PATTERNS[@]}"; do
-            if grep -rn "$PATTERN" --include="*.md" --include="*.ts" --include="*.sql" --include="*.json" --exclude-dir=.github . 2>/dev/null; then
+            if grep -rn "$PATTERN" --include="*.md" --include="*.ts" --include="*.sql" --include="*.json" --include="*.log" --exclude-dir=.github . 2>/dev/null; then
               echo "FOUND: $PATTERN"
               FOUND=1
             fi
@@ -47,6 +48,18 @@ jobs:
             echo ""
             echo "ERROR: Private data detected in public repo."
             echo "Run the scrub script or manually replace the values above."
+            exit 1
+          fi
+
+          # Check for log files that may contain sensitive data
+          if find . -name '*.log' -not -path './.git/*' | grep -q .; then
+            echo ""
+            echo "ERROR: Log files found in repository (may contain sensitive data):"
+            find . -name '*.log' -not -path './.git/*'
+            FOUND=1
+          fi
+
+          if [ "$FOUND" -eq 1 ]; then
             exit 1
           fi
 

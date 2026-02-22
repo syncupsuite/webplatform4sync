@@ -16,9 +16,13 @@ import {
 import { relations } from "drizzle-orm";
 
 // ---------------------------------------------------------------------------
-// Schema namespace - each app gets its own PostgreSQL schema
+// Schema namespaces
 // ---------------------------------------------------------------------------
 
+/** Platform infrastructure tables (tenants, domains, relationships). */
+export const platformSchema = pgSchema("platform");
+
+/** Application-domain tables — each app gets its own PostgreSQL schema. */
 export const appSchema = pgSchema("{{SCHEMA_NAME}}");
 
 // ---------------------------------------------------------------------------
@@ -27,14 +31,14 @@ export const appSchema = pgSchema("{{SCHEMA_NAME}}");
 
 // Tenant tier is numeric: 0 = Platform, 1 = Partner, 2 = Customer
 
-export const tenantStatusEnum = appSchema.enum("tenant_status", [
+export const tenantStatusEnum = platformSchema.enum("tenant_status", [
   "active",
   "suspended",
   "provisioning",
   "decommissioned",
 ]);
 
-export const isolationModeEnum = appSchema.enum("isolation_mode", [
+export const isolationModeEnum = platformSchema.enum("isolation_mode", [
   "rls",        // Shared schema, RLS-isolated rows
   "schema",     // Dedicated schema per tenant
   "database",   // Dedicated database per tenant
@@ -44,7 +48,7 @@ export const isolationModeEnum = appSchema.enum("isolation_mode", [
 // Tenants - 3-tier hierarchical multi-tenancy
 // ---------------------------------------------------------------------------
 
-export const tenants = appSchema.table(
+export const tenants = platformSchema.table(
   "tenants",
   {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -88,7 +92,7 @@ export const tenantsRelations = relations(tenants, ({ one, many }) => ({
 // Tenant relationships - closure table for efficient hierarchy queries
 // ---------------------------------------------------------------------------
 
-export const tenantRelationships = appSchema.table(
+export const tenantRelationships = platformSchema.table(
   "tenant_relationships",
   {
     ancestorId: uuid("ancestor_id")
@@ -125,7 +129,7 @@ export const tenantRelationshipsRelations = relations(
 // Domain mappings - custom domains per tenant
 // ---------------------------------------------------------------------------
 
-export const domainMappings = appSchema.table(
+export const domainMappings = platformSchema.table(
   "domain_mappings",
   {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -134,7 +138,7 @@ export const domainMappings = appSchema.table(
       .references(() => tenants.id, { onDelete: "cascade" }),
     domain: varchar("domain", { length: 255 }).notNull(),
     isPrimary: boolean("is_primary").notNull().default(false),
-    verified: boolean("verified").notNull().default(false),
+    verifiedAt: timestamp("verified_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

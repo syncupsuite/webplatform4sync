@@ -287,41 +287,36 @@ async function resolveFromPreviewToken(
 /**
  * Verify a Better Auth session token and return FULL auth state.
  *
- * This MUST be implemented before use. The stub throws to prevent
- * silent authentication bypass.
+ * Calls betterAuth.verifySession() to validate the token against
+ * the neon_auth.session table, check expiry, and fetch the user.
+ *
+ * If your Better Auth setup uses a custom session format, override
+ * this function with your own implementation.
  */
 async function verifyBetterAuthSession(
   token: string,
   betterAuth: BetterAuthInstance
 ): Promise<FullAuth | null> {
-  // Better Auth session verification is implementation-specific.
-  // Typical pattern: decode session token, look up in neon_auth.session table,
-  // check expiry, fetch user and roles.
-  //
-  // Example (replace with actual Better Auth API):
-  //
-  // const session = await betterAuth.verifySession(token);
-  // if (!session) return null;
-  //
-  // const roles = await betterAuth.getUserRoles(session.userId, session.tenantId);
-  //
-  // return {
-  //   level: AuthLevel.FULL,
-  //   userId: session.userId,
-  //   sessionId: session.id,
-  //   email: session.user.email,
-  //   name: session.user.name,
-  //   picture: session.user.image,
-  //   roles,
-  //   tenantId: session.tenantId,
-  //   tenantRole: roles[0],
-  // };
+  const result = await betterAuth.verifySession(token);
+  if (!result) return null;
 
-  throw new Error(
-    'verifyBetterAuthSession() is not implemented. ' +
-    'You MUST implement this function to validate Better Auth sessions. ' +
-    'See: skills/graduated-auth/references/auth-layers.md'
-  );
+  const { session, user, tenantId } = result;
+  const resolvedTenantId = tenantId ?? '';
+  const roles = resolvedTenantId
+    ? await betterAuth.getUserRoles(user.id, resolvedTenantId)
+    : [];
+
+  return {
+    level: AuthLevel.FULL,
+    userId: user.id,
+    sessionId: session.id,
+    email: user.email,
+    name: user.name,
+    picture: user.image,
+    roles,
+    tenantId: resolvedTenantId,
+    tenantRole: roles[0],
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -333,13 +328,16 @@ async function verifyBetterAuthSession(
  *
  * @param email - Email from the inquiry form
  * @param kv - KV namespace for session storage
- * @param ttlSeconds - Session TTL (default: 30 days)
+ * @param ttlSeconds - Session TTL in seconds (default: 30 days).
+ *   Canonical value: shared/contracts/constants.ts PREVIEW_SESSION_TTL_SECONDS
  * @returns Session ID to set as preview cookie
  */
+const PREVIEW_SESSION_TTL_SECONDS = 30 * 24 * 60 * 60; // 30 days
+
 export async function createPreviewSession(
   email: string,
   kv: KVNamespace,
-  ttlSeconds = 30 * 24 * 60 * 60
+  ttlSeconds = PREVIEW_SESSION_TTL_SECONDS
 ): Promise<string> {
   const sessionId = generateId();
   const session = {

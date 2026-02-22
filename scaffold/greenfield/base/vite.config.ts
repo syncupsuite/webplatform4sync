@@ -32,7 +32,7 @@ export default defineConfig({
           "vendor-react": [
             "react",
             "react-dom",
-            "react-router-dom",
+            "react-router",
           ],
         },
       },

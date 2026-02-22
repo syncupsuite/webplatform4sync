@@ -17,6 +17,9 @@
  *   - BETTER_AUTH_SECRET: string
  */
 
+// Session duration — canonical value: shared/contracts/constants.ts
+const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+
 // ---------------------------------------------------------------------------
 // Auth Level Enum
 // ---------------------------------------------------------------------------
@@ -241,6 +244,15 @@ export interface GraduationBridgeOptions {
   defaultTenantId: string;
   /** Default role for new users within the tenant */
   defaultRole?: string;
+  /**
+   * Optional callback to invalidate the prior session (e.g., delete
+   * the OAuth KV session) after a successful graduation. Called with
+   * the new Better Auth session ID for audit purposes.
+   *
+   * If not provided, old sessions are not cleaned up — the caller
+   * is responsible for cookie rotation.
+   */
+  onSessionCreated?: (newSessionId: string) => Promise<void>;
 }
 
 /**
@@ -284,6 +296,18 @@ export interface BetterAuthInstance {
     tenantId: string;
     role: string;
   }): Promise<void>;
+
+  /** Get linked OAuth accounts for a user */
+  getLinkedAccounts(userId: string): Promise<
+    Array<{ provider: string; providerAccountId: string }>
+  >;
+
+  /** Verify a session token and return the session + user if valid */
+  verifySession(token: string): Promise<{
+    session: { id: string; userId: string; expiresAt: Date };
+    user: { id: string; email: string; name?: string; image?: string };
+    tenantId?: string;
+  } | null>;
 }
 
 /**
@@ -322,7 +346,7 @@ export async function graduateToFullAccount(
   firebaseIdToken: string,
   options: GraduationBridgeOptions
 ): Promise<GraduationResult> {
-  const { firebaseProjectId, betterAuth, defaultTenantId, defaultRole = 'member' } = options;
+  const { firebaseProjectId, betterAuth, defaultTenantId, defaultRole = 'member', onSessionCreated } = options;
 
   // Step 1: Verify Firebase token
   const claims = await verifyFirebaseToken(firebaseIdToken, firebaseProjectId);
@@ -375,11 +399,16 @@ export async function graduateToFullAccount(
     });
   }
 
-  // Step 4: Create Better Auth session (7-day expiry)
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  // Step 4: Create Better Auth session
+  const expiresAt = new Date(Date.now() + SESSION_TTL_MS);
   const session = await betterAuth.createSession({ userId, expiresAt });
 
-  // Step 5: Resolve roles for auth state
+  // Step 5: Invalidate prior session (prevents session fixation)
+  if (onSessionCreated) {
+    await onSessionCreated(session.id);
+  }
+
+  // Step 6: Resolve roles for auth state
   const roles = await betterAuth.getUserRoles(userId, defaultTenantId);
 
   return {
@@ -416,7 +445,7 @@ export async function graduateFromOAuth(
   oauthState: OAuthAuth,
   options: Omit<GraduationBridgeOptions, 'firebaseProjectId'>
 ): Promise<GraduationResult> {
-  const { betterAuth, defaultTenantId, defaultRole = 'member' } = options;
+  const { betterAuth, defaultTenantId, defaultRole = 'member', onSessionCreated } = options;
 
   let userId: string;
   let isNewAccount = false;
@@ -424,18 +453,25 @@ export async function graduateFromOAuth(
   const existingUser = await betterAuth.findUserByEmail(oauthState.email);
 
   if (existingUser) {
-    userId = existingUser.id;
+    // Security: Only allow graduation if this specific OAuth provider is
+    // ALREADY linked to the existing account (i.e., returning user).
+    // Never auto-link a new provider by email match alone — an attacker
+    // with a different OAuth account matching the victim's email could
+    // escalate to FULL access on the victim's account.
+    const linked = await betterAuth.getLinkedAccounts(existingUser.id);
+    const isProviderLinked = linked.some(
+      (a) =>
+        a.provider === oauthState.provider &&
+        a.providerAccountId === oauthState.providerId
+    );
 
-    // Link provider if not already linked
-    try {
-      await betterAuth.linkAccount({
-        userId,
-        provider: oauthState.provider,
-        providerAccountId: oauthState.providerId,
-      });
-    } catch {
-      // Already linked
+    if (!isProviderLinked) {
+      throw new Error(
+        'An account with this email already exists. Sign in to the existing account first, then link your OAuth identity.'
+      );
     }
+
+    userId = existingUser.id;
   } else {
     const newUser = await betterAuth.createUser({
       email: oauthState.email,
@@ -459,8 +495,14 @@ export async function graduateFromOAuth(
     });
   }
 
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + SESSION_TTL_MS);
   const session = await betterAuth.createSession({ userId, expiresAt });
+
+  // Invalidate prior session (prevents session fixation)
+  if (onSessionCreated) {
+    await onSessionCreated(session.id);
+  }
+
   const roles = await betterAuth.getUserRoles(userId, defaultTenantId);
 
   return {

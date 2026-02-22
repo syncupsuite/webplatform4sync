@@ -192,8 +192,8 @@ Workers are the deployment target, not an optimization layer. Every template and
 | Component | Technology | Why This One |
 |-----------|-----------|-------------|
 | React 19 | UI framework | Concurrent features, transitions, broad ecosystem |
-| TypeScript 5.7 | Language | Strict mode across the full stack |
-| Tailwind 4 | Styling | CSS-first config, native `@theme` for token integration |
+| TypeScript 5.9 | Language | Strict mode across the full stack |
+| Tailwind 4.1 | Styling | CSS-first config, native `@theme` for token integration |
 | Vite 7 | Build | Fast dev server, `@cloudflare/vite-plugin` for Workers |
 | Cloudflare Workers | Runtime | Edge deployment, KV/R2/Hyperdrive bindings |
 | Neon PostgreSQL | Database | Serverless, branch-based isolation, Hyperdrive pooling |

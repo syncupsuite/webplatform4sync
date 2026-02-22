@@ -158,8 +158,8 @@ See `shared/contracts/tokens.ts` for the canonical `PROTECTED_TOKEN_PATHS` list.
 @import "./tokens/core.css";
 
 @theme {
-  --color-primary: var(--token-color-primary);
-  --color-accent: var(--token-color-accent);
+  --color-primary: var(--color-primary);
+  --color-accent: var(--color-accent);
   /* Tokens flow through @theme into Tailwind utilities */
 }
 ```
@@ -171,8 +171,8 @@ See `shared/contracts/tokens.ts` for the canonical `PROTECTED_TOKEN_PATHS` list.
 | Component | Technology | Why |
 |-----------|-----------|-----|
 | React 19 | UI framework | Concurrent features, transitions, server components ready |
-| TypeScript 5.7 | Language | Strict mode, type safety across stack |
-| Tailwind 4 | Styling | CSS-first config, token integration via @theme |
+| TypeScript 5.9 | Language | Strict mode, type safety across stack |
+| Tailwind 4.1 | Styling | CSS-first config, token integration via @theme |
 | Vite 7 | Build | Fast dev, @cloudflare/vite-plugin for Workers |
 | Cloudflare Workers | Runtime | Edge deployment, KV/R2/Hyperdrive bindings |
 | Neon PostgreSQL | Database | Serverless, branching, Hyperdrive pooling |

@@ -7,7 +7,7 @@ export default defineConfig({
   dbCredentials: {
     url: process.env["NEON_DATABASE_URL"]!,
   },
-  schemaFilter: ["{{SCHEMA_NAME}}"],
+  schemaFilter: ["platform", "{{SCHEMA_NAME}}"],
   verbose: true,
   strict: true,
 });

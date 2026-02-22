@@ -28,15 +28,17 @@ Simple projects use the same architecture with dormant tiers (hardcoded `tenant_
 | Component | Technology | Version |
 |-----------|-----------|---------|
 | UI Framework | React | ^19.2 |
-| Language | TypeScript | ^5.7 |
-| Styling | Tailwind CSS | ^4.0 (CSS-first `@theme`) |
+| Language | TypeScript | ^5.9 |
+| Styling | Tailwind CSS | ^4.1 (CSS-first `@theme`) |
 | Build | Vite | ^7.0 |
 | Edge Runtime | Cloudflare Workers | wrangler ^4.x |
 | Database | Neon PostgreSQL | Serverless driver + Hyperdrive |
-| ORM | Drizzle ORM | ^0.38 |
-| Auth (Sessions) | Better Auth | ^1.x (`neon_auth` schema) |
+| ORM | Drizzle ORM | ^0.45 |
+| Auth (Sessions) | Better Auth | ^1.4 (`neon_auth` schema) |
 | Auth (Identity) | Firebase / Google Identity Platform | europe-west6 |
 | Design Tokens | Style Dictionary | W3C DTCG aligned |
+| Routing | React Router | ^7.13 (unified package) |
+| Analytics | PostHog | posthog-js ^1.x + reverse proxy |
 
 ---
 
@@ -54,7 +56,8 @@ scaffold/                  # Project scaffolding templates
 ├── brownfield/            # Migration to standards
 └── overlay/               # Token/theme system only
 
-shared/                    # Shared conventions and validation
+shared/                    # Shared conventions, contracts, and validation
+├── contracts/             # Canonical types and constants (cross-skill)
 ├── conventions/           # Naming, stack versions, deployment
 └── validation/            # Token and tenant validators
 

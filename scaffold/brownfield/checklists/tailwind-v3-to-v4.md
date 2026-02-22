@@ -40,16 +40,16 @@ Replace `tailwind.config.js` with `@theme` in CSS:
 @import "tailwindcss";
 
 @theme {
-  --color-primary: var(--token-color-primary);
-  --color-accent: var(--token-color-accent);
-  --color-background-canvas: var(--token-color-background-canvas);
-  --color-background-surface: var(--token-color-background-surface);
-  --color-text-primary: var(--token-color-text-primary);
-  --color-text-secondary: var(--token-color-text-secondary);
-  --spacing-xs: var(--token-spacing-xs);
-  --spacing-sm: var(--token-spacing-sm);
-  --spacing-md: var(--token-spacing-md);
-  --spacing-lg: var(--token-spacing-lg);
+  --color-primary: var(--color-primary);
+  --color-accent: var(--color-accent);
+  --color-background-canvas: var(--color-background);
+  --color-background-surface: var(--color-surface);
+  --color-text-primary: var(--color-text);
+  --color-text-secondary: var(--color-text-secondary);
+  --spacing-xs: var(--spacing-xs);
+  --spacing-sm: var(--spacing-sm);
+  --spacing-md: var(--spacing-md);
+  --spacing-lg: var(--spacing-lg);
 }
 ```
 

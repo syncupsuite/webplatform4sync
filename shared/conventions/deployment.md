@@ -29,7 +29,7 @@ Every deployment must verify:
 ```jsonc
 {
   "name": "project-name-worker",
-  "compatibility_date": "2025-01-01",
+  "compatibility_date": "2025-12-01",
   "main": "src/server/index.ts",
   "env": {
     "staging": {
@@ -66,6 +66,7 @@ wrangler secret put BETTER_AUTH_SECRET --env production
 | `@` | CNAME | Cloudflare Worker route | Main site |
 | `staging` | CNAME | Cloudflare Worker route | Staging |
 | `auth` | CNAME | Firebase Hosting | Identity flows (initial) |
+| `pha` | CNAME | PostHog managed CNAME (`europehog.com`) | Analytics reverse proxy (DNS-only, no orange cloud) |
 
 ### Firebase Auth Subdomain
 

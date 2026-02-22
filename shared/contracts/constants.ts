@@ -55,6 +55,19 @@ export const PLATFORM_SCHEMA_NAME = 'platform' as const;
 export type DomainType = 'primary' | 'alias' | 'vanity';
 
 // ---------------------------------------------------------------------------
+// Session Durations
+// ---------------------------------------------------------------------------
+
+/** Full Better Auth session TTL in seconds (7 days). */
+export const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60;
+
+/** Session refresh threshold in seconds (1 day). */
+export const SESSION_REFRESH_SECONDS = 24 * 60 * 60;
+
+/** Preview (email-captured) session TTL in seconds (30 days). */
+export const PREVIEW_SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
+
+// ---------------------------------------------------------------------------
 // Performance Budgets
 // ---------------------------------------------------------------------------
 
