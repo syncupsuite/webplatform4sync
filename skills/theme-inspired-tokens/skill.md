@@ -11,17 +11,25 @@ A Claude Code skill for generating culturally-grounded design token systems wher
 `@syncupsuite/themes` provides pre-built implementations of this pattern. If you want production-ready cultural themes without building from scratch, install the package:
 
 ```bash
-npm install @syncupsuite/themes   # v0.2.2 — OKLCH color math, security-audited, zero runtime deps
+npm install @syncupsuite/themes   # v0.4.0 — OKLCH color math, security-audited, zero runtime deps
 ```
 
-> **Package quality**: v0.1.1 has been through a comprehensive review — P0 CSS generation bugs fixed, P1 security hardening (CSS injection prevention), PERF_BUDGETS enforced, and 7 Architecture Decision Records (ADR-001 through ADR-007) governing all major design decisions. See `syncupsuite/themes/docs/adr/` for full detail.
+> **Package quality**: v0.4.0 has been through comprehensive review — P0 CSS generation bugs fixed, P1 security hardening (CSS injection prevention), PERF_BUDGETS enforced, Semantic Color API with Tailwind v4 `@theme` integration, WCAG contrast validation across all 12 themes, and 7 Architecture Decision Records (ADR-001 through ADR-007) governing all major design decisions. See `syncupsuite/themes/docs/adr/` for full detail.
 
 **CSS usage** -- import directly into your stylesheet:
 
 ```css
 @import '@syncupsuite/themes/swiss-international/tailwind.css';
-/* or */
-@import '@syncupsuite/themes/nihon-traditional/tailwind.css';
+/* or any of the 12 available themes */
+@import '@syncupsuite/themes/nordic-modern/tailwind.css';
+```
+
+**Semantic Color API** -- Tailwind v4 `@theme` utilities map directly to semantic tokens:
+
+```html
+<div class="bg-canvas text-foreground">
+  <button class="bg-primary text-primary-foreground ring-ring">Action</button>
+</div>
 ```
 
 **TypeScript usage** -- access token objects programmatically:
@@ -31,7 +39,7 @@ import { swissInternational } from '@syncupsuite/themes';
 import { buildTokens } from '@syncupsuite/transformers';
 ```
 
-Available pre-built themes: `swiss-international`, `nihon-traditional`.
+Available pre-built themes (12): `swiss-international`, `nihon-traditional`, `nordic-modern`, `tang-imperial`, `shuimo-modern`, `nihon-minimal`, `renaissance`, `art-deco`, `wiener-werkstaette`, `milanese-design`, `de-stijl`, `swiss-modernist`. All themes validated against 20 WCAG AA contrast pairs.
 
 > **Skill vs. Package**: The package ships curated implementations. This skill teaches you to build your own -- custom cultural tokens from any tradition, following the same four-layer pattern. Use the package for speed; use this skill when you need a theme that doesn't exist yet.
 

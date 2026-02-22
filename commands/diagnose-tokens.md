@@ -36,8 +36,8 @@ Check if `@syncupsuite/themes` is installed and which version.
 cat node_modules/@syncupsuite/themes/package.json | grep version
 ```
 
-- `[PASS]` if >= 0.2.2
-- `[WARN]` if < 0.2.2 (pre-security-audit version — upgrade recommended)
+- `[PASS]` if >= 0.4.0
+- `[WARN]` if < 0.4.0 (pre-Semantic-Color-API version — upgrade recommended)
 - `[FAIL]` if not installed
 
 ### Step 2: CSS Entry Point
@@ -149,7 +149,7 @@ After running all checks, output a summary table:
 Token Installation Diagnostic
 ==============================
 
-  Step 1: Package version        [PASS] @syncupsuite/themes@0.2.2
+  Step 1: Package version        [PASS] @syncupsuite/themes@0.4.0
   Step 2: CSS entry point        [PASS] src/styles/app.css imports tailwind.css
   Step 3: :root completeness     [FAIL] Missing: --color-warning, --radius-lg
   Step 4: Dark mode block        [WARN] 14/17 tokens have dark equivalents
