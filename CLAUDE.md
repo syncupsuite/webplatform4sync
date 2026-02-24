@@ -1,11 +1,13 @@
-# CLAUDE.md — webplatform4sync
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Repository Purpose
 
-Internal platform standards, skills, and scaffold templates for all SyncUpSuite projects. This repo defines **the standard** that every project — greenfield or brownfield — aligns to.
+Platform standards, skills, and scaffold templates for all SyncUpSuite projects. This repo defines **the standard** that every project — greenfield or brownfield — aligns to.
 
 **Org**: `syncupsuite`
-****Repo**: `syncupsuite/webplatform4sync`
+**Repo**: `syncupsuite/webplatform4sync`
 
 ---
 
@@ -25,10 +27,12 @@ Simple projects use the same architecture with dormant tiers (hardcoded `tenant_
 
 ## Standard Stack
 
+Source of truth: `shared/conventions/stack.md` — always check there for locked versions.
+
 | Component | Technology | Version |
 |-----------|-----------|---------|
 | UI Framework | React | ^19.2 |
-| Language | TypeScript | ^5.9 |
+| Language | TypeScript | ^5.9 (strict mode) |
 | Styling | Tailwind CSS | ^4.1 (CSS-first `@theme`) |
 | Build | Vite | ^7.0 |
 | Edge Runtime | Cloudflare Workers | wrangler ^4.x |
@@ -36,8 +40,8 @@ Simple projects use the same architecture with dormant tiers (hardcoded `tenant_
 | ORM | Drizzle ORM | ^0.45 |
 | Auth (Sessions) | Better Auth | ^1.4 (`neon_auth` schema) |
 | Auth (Identity) | Firebase / Google Identity Platform | europe-west6 |
-| Design Tokens | Style Dictionary | W3C DTCG aligned |
-| Routing | React Router | ^7.13 (unified package) |
+| Design Tokens | @syncupsuite/themes | ^0.4.0 (12 themes, Semantic Color API) |
+| Routing | React Router | ^7.13 (unified `react-router` package) |
 | Analytics | PostHog | posthog-js ^1.x + reverse proxy |
 
 ---
@@ -53,16 +57,77 @@ skills/                    # Claude Code skills (abstract, universal)
 
 scaffold/                  # Project scaffolding templates
 ├── greenfield/            # New project from scratch
+│   └── base/              # Canonical project template (src/, styles/, db/, server/)
 ├── brownfield/            # Migration to standards
 └── overlay/               # Token/theme system only
 
 shared/                    # Shared conventions, contracts, and validation
-├── contracts/             # Canonical types and constants (cross-skill)
-├── conventions/           # Naming, stack versions, deployment
+├── contracts/             # Canonical types and constants (auth.ts, tenant.ts, tokens.ts, constants.ts, env.ts)
+├── conventions/           # stack.md (versions), naming.md, deployment.md, analytics.md
 └── validation/            # Token and tenant validators
 
+commands/                  # Claude Code command files (.md)
+frames/                    # Command frames (construction, shuhari)
+.claude-plugin/            # Plugin manifest (plugin.json, marketplace.json)
 docs/                      # Canonical documentation
 ```
+
+---
+
+## Critical Patterns
+
+### Neon RLS Tenant Isolation
+
+Neon's serverless HTTP driver executes each query as a separate HTTP request. `set_config('app.tenant_id', ...)` **must** be in the same Drizzle transaction as the data queries — otherwise the config is lost.
+
+**Correct pattern** (in `skills/neon-multi-tenant/templates/drizzle-tenant.ts`):
+```typescript
+// tenantQuery() wraps set_config + queries in a single transaction
+const results = await tenantQuery(db, tenantId, async (tx) => {
+  return tx.select().from(items);
+});
+```
+
+### Schema Split
+
+The greenfield scaffold uses two Drizzle schemas:
+- `platformSchema` (`platform`) — tenant infrastructure: tenants, domain_mappings, tenant_relationships
+- `appSchema` (`{{SCHEMA_NAME}}`) — application-domain tables
+
+Both must be in `drizzle.config.ts` `schemaFilter`.
+
+### Auth Graduation
+
+Auth is not binary — projects support graduated access:
+
+```
+Anonymous → Preview/Inquiry → OAuth (Google/GitHub) → Full Account (Better Auth + Firebase)
+```
+
+Firebase provides identity. Better Auth provides sessions, RBAC, and tenant-scoped authorization in Neon. See `shared/contracts/auth.ts` for the `AuthLevel` enum and discriminated union types.
+
+### Tailwind v4 CSS-first
+
+Tailwind v4 uses `@theme` blocks in CSS (no `tailwind.config.js`). Self-referential `var()` inside `@theme` is the standard registration pattern — not a bug:
+```css
+@theme {
+  --color-primary: var(--color-primary); /* registers :root value as Tailwind token */
+}
+```
+
+Dark mode uses `[data-theme="dark"]` selector (class strategy), not `@media (prefers-color-scheme)`.
+
+---
+
+## Plugin Schema Rules
+
+When editing `.claude-plugin/plugin.json`:
+- Only flat fields: `name`, `version`, `description`, `commands` (path string), `skills` (path string), `agents`, `hooks`, `mcpServers`, `outputStyles`, `lspServers`
+- No custom nested objects — causes "invalid input" errors
+
+When editing `.claude-plugin/marketplace.json`:
+- Plugin `source` must be `"./"` for local plugins — not `"npm:package-name"` string format
+- `@syncupsuite/themes` is an npm package, not a Claude Code plugin — don't list it in marketplace.json
 
 ---
 
@@ -74,32 +139,18 @@ repo name = domain name = Google project ID
 
 Example: `brandsyncup-com` → `brandsyncup.com` → GCP project `brandsyncup-com`
 
-Google project IDs: max 30 chars, lowercase, hyphens only. If the domain exceeds 30 chars, use `{product}-{tld}` pattern.
+Google project IDs: max 30 chars, lowercase, hyphens only.
 
 ---
 
-## Scaffold Flow
+## Working with This Repo
 
-Three paths based on project state:
-
-| Template | When | What You Get |
-|----------|------|-------------|
-| **greenfield** | New project, new domain | Full 3-tier scaffold from scratch |
-| **brownfield** | Existing project | Migration guide + incremental adoption |
-| **overlay** | Adding design system only | Token pipeline, no infra changes |
-
----
-
-## Auth Graduation Model
-
-Auth is not binary. Projects support graduated access:
-
-```
-Anonymous → Preview/Inquiry → OAuth (Google/GitHub) → Full Account (Better Auth + Firebase)
-```
-
-Firebase provides identity (Google Identity Platform, email delivery, `auth.domain.tld`).
-Better Auth provides sessions, RBAC, and tenant-scoped authorization in Neon.
+- No build commands — this repo is templates and patterns only
+- Skills are standalone — each has a `skill.md` entry point
+- Scaffold templates are concrete files with `{{PLACEHOLDER}}` tokens
+- `shared/conventions/stack.md` is the source of truth for dependency versions
+- Changes to skills should be validated against BrandSyncUp or LegalSyncUp
+- No secrets — Doppler references are placeholders showing _where_ secrets go
 
 ---
 
@@ -107,21 +158,5 @@ Better Auth provides sessions, RBAC, and tenant-scoped authorization in Neon.
 
 - **BrandSyncUp** (`brandsyncup.com`): Reference implementation of this standard
 - **LegalSyncUp** (`legalsyncup.com`): Loosely coupled partner, shared auth infrastructure
-- **SyncUpSuite**: Umbrella org, eventual public marketplace
-
----
-
-## Working with This Repo
-
-- Skills are standalone — each has a `skill.md` entry point
-- Scaffold templates are concrete files, not abstractions
-- `shared/conventions/stack.md` is the source of truth for dependency versions
-- Changes to skills should be validated against at least one existing project (BrandSyncUp or LegalSyncUp)
-
----
-
-## Security
-
-- No secrets in this repo — it's templates and patterns only
-- Doppler references are placeholders showing _where_ secrets go
-- Firebase/Neon/Cloudflare credentials are per-project, never shared here
+- **@syncupsuite/themes**: npm package with 12 culturally-grounded themes (separate `themes/` repo)
+- **SyncUpSuite**: Umbrella org, public marketplace
