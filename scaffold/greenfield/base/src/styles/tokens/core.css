@@ -34,8 +34,8 @@
   --color-primary-hover: #1d4ed8;
   --color-primary-light: #dbeafe;
 
-  --color-accent: #8b5cf6;
-  --color-accent-hover: #7c3aed;
+  --color-accent: #7c3aed;        /* violet-600 — 5.70:1 on white (AA) */
+  --color-accent-hover: #6d28d9;  /* violet-700 */
   --color-accent-light: #ede9fe;
 
   --color-background: #ffffff;
@@ -45,17 +45,17 @@
 
   --color-text: var(--color-neutral-900);
   --color-text-secondary: var(--color-neutral-600);
-  --color-text-muted: var(--color-neutral-400);
+  --color-text-muted: var(--color-neutral-500);   /* 4.76:1 on white, 4.55:1 on subtle (AA) */
   --color-text-inverse: #ffffff;
 
   --color-border: var(--color-neutral-200);
   --color-border-strong: var(--color-neutral-300);
 
-  --color-error: #dc2626;
+  --color-error: #b91c1c;         /* red-700 — 6.47:1 on white, 5.91:1 on error-light (AA) */
   --color-error-light: #fef2f2;
-  --color-success: #16a34a;
+  --color-success: #15803d;       /* green-700 — 5.02:1 on white (AA) */
   --color-success-light: #f0fdf4;
-  --color-warning: #d97706;
+  --color-warning: #b45309;       /* amber-700 — 5.02:1 on white (AA) */
   --color-warning-light: #fffbeb;
   --color-info: #2563eb;
   --color-info-light: #eff6ff;
@@ -163,7 +163,7 @@
 
   --color-text: var(--color-neutral-50);
   --color-text-secondary: var(--color-neutral-300);
-  --color-text-muted: var(--color-neutral-500);
+  --color-text-muted: var(--color-neutral-400);   /* 6.96:1 on bg, 5.71:1 on surface (AA) */
   --color-text-inverse: var(--color-neutral-900);
 
   --color-border: var(--color-neutral-700);
