@@ -1,0 +1,80 @@
+/*
+ * Cultural Theme Overlay Template
+ *
+ * This file demonstrates how to override the default tokens (src/styles/tokens/core.css)
+ * with a custom cultural theme. Copy this pattern to create your own.
+ *
+ * Approach:
+ * 1. Import your theme package or define custom colors here
+ * 2. Override :root variables with your theme colors
+ * 3. (Optional) Define dark mode overrides with [data-theme="dark"]
+ *
+ * Example: Using Swiss International theme
+ */
+
+/* Option 1: Import a pre-built theme package (recommended) */
+/* @import '@syncupsuite/themes/swiss-international/tailwind.css'; */
+
+/* Option 2: Define a custom theme here */
+:root {
+  /* If using a custom cultural foundation, override the semantic colors here.
+     Keep the same variable names as core.css for consistency.
+     
+     Example: Adapting colors for a "Bauhaus Minimalist" theme
+  */
+  
+  /* --color-primary: #000000;           /* Black — core geometric principle */
+  /* --color-primary-hover: #1a1a1a;
+  /* --color-primary-light: #f0f0f0;
+  
+  /* --color-accent: #ff0000;             /* Primary red — Bauhaus primary */
+  /* --color-accent-hover: #cc0000;
+  /* --color-accent-light: #ffe6e6;
+  
+  /* --color-background: #ffffff;
+  /* --color-background-subtle: #f5f5f5;
+  /* --color-surface: #fafafa;
+  /* --color-surface-raised: #ffffff;
+  
+  /* --color-text: #1a1a1a;
+  /* --color-text-secondary: #4d4d4d;
+  /* --color-text-muted: #999999;
+  
+  /* ... and so on for all tokens defined in src/styles/tokens/core.css */
+}
+
+/* Optional: Dark mode overrides (only if using a custom theme above) */
+[data-theme="dark"] {
+  /* Define dark mode colors here, following the same pattern as core.css */
+  
+  /* --color-primary: #ffffff;
+  /* --color-primary-hover: #e6e6e6;
+  /* --color-primary-light: #333333;
+  /* ... etc */
+}
+
+/*
+ * Guidelines for Custom Themes:
+ *
+ * 1. **Provenance**: Document where each color comes from. Example:
+ *    "This black (#000000) comes from Bauhaus typography and printing traditions."
+ *
+ * 2. **Semantic meaning**: Map colors to semantic tokens, not arbitrary names.
+ *    - Use --color-primary (not --color-main)
+ *    - Use --color-accent (not --color-highlight)
+ *    - Use --color-error, --color-success, --color-warning, --color-info
+ *
+ * 3. **Contrast validation**: Run your custom theme through WCAG AA validation.
+ *    Use the `/theme-inspired-tokens --validate` skill to check contrast pairs.
+ *
+ * 4. **Consistency**: All tokens from core.css should have overrides in your
+ *    cultural overlay. Partial overrides may cause unexpected behavior.
+ *
+ * 5. **Dark mode**: If your theme defines light mode colors, also provide
+ *    dark mode variants in the [data-theme="dark"] block.
+ *
+ * For guidance on building a complete cultural theme system, see:
+ * - THEMING.md (this directory) — Quick start guide
+ * - /theme-inspired-tokens skill — Full theme builder with cultural framework
+ * - shared/contracts/tokens.ts — Canonical token schema
+ */

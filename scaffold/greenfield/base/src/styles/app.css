@@ -36,9 +36,13 @@
   --color-warning: var(--color-warning);
   --color-info: var(--color-info);
 
-  /* Typography */
-  --font-family-sans: var(--font-family-sans);
-  --font-family-mono: var(--font-family-mono);
+  /* Typography — Tailwind v4's namespace is --font-*, NOT --font-family-*.
+     Registering --font-family-sans here would compile a variable no utility
+     reads, leaving font-sans on Tailwind's default system stack (silent
+     failure). Matches the namespace emitted by
+     skills/theme-inspired-tokens/transformers/tailwind-v4.ts. */
+  --font-sans: var(--font-family-sans);
+  --font-mono: var(--font-family-mono);
 
   /* Border radius */
   --radius-sm: var(--radius-sm);

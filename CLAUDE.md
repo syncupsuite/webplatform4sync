@@ -79,6 +79,16 @@ docs/                      # Canonical documentation
 
 Every skill is standalone: `skill.md` entry point + `templates/` (runnable, parameterized) + `references/` (decisions and trade-offs).
 
+### Design Tokens & Theming
+
+New projects include three levels of theme support:
+
+1. **Default tokens** — Neutral Slate base in `scaffold/greenfield/base/src/styles/tokens/core.css`
+2. **Pre-built themes** — 12 culturally-grounded themes via `@syncupsuite/themes@^0.4.0` (installed by default in scaffold)
+3. **Custom themes** — Build your own using `/theme-inspired-tokens` skill for complete control
+
+See `scaffold/greenfield/base/THEMING.md` for the full workflow, or use `/theme-inspired-tokens` directly to build a custom cultural theme system.
+
 ---
 
 ## The Frame System
